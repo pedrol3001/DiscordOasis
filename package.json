@@ -1,0 +1,32 @@
+{
+  "name": "discord-oasis",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "private": false,
+  "author": "<pedrolcr@outlook.com>",
+  "license": "MIT",
+  "engines": {
+    "node": "14.x"
+  },
+  "devDependencies": {
+    "@types/node": "^16.3.1",
+    "@types/uuid": "^8.3.1",
+    "husky": "^7.0.1",
+    "lint-staged": "^11.1.2",
+    "prettier": "2.3.2",
+    "ts-node-dev": "^1.1.8",
+    "tsconfig-paths": "^3.10.1",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "discord-dynamic-messages": "^4.0.0",
+    "discord.js": "^12.5.3",
+    "reflect-metadata": "^0.1.13",
+    "tsyringe": "^4.6.0",
+    "uuid": "^8.3.2"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  }
+}
