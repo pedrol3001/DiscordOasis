@@ -1,6 +1,8 @@
-import ICommand from 'oasis/interfaces/ICommand';
-import CommandHandler from '@commands/';
-import { PluginsHandler } from '@discord/plugins';
+import {ICommand} from '@interfaces/ICommand'
+import {AbstractPlugin} from '@plugins/class/AbstractPlugin'
+import {ICommandHandler} from '@interfaces/ICommandHandler'
+import {Client, Guild, Message, MessageEmbed} from 'discord.js'
+
 
 declare module 'discord.js' {
   export interface Client {

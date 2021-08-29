@@ -1,17 +1,30 @@
 {
-  "name": "discord-oasis",
+  "name": "@pedrol3001/discord-oasis",
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "private": false,
-  "author": "<pedrolcr@outlook.com>",
+  "author": " <pedrolcr@outlook.com>",
   "license": "MIT",
   "engines": {
     "node": "14.x"
   },
+  "scripts": {
+    "build": "babel src --extensions \".js,.ts\" --out-dir dist --copy-files",
+    "test": "jest"
+  },
   "devDependencies": {
+    "@babel/cli": "^7.14.8",
+    "@babel/core": "^7.14.8",
+    "@babel/node": "^7.14.9",
+    "@babel/plugin-proposal-class-properties": "^7.14.5",
+    "@babel/plugin-proposal-decorators": "^7.14.5",
+    "@babel/preset-env": "^7.14.9",
+    "@babel/preset-typescript": "^7.14.5",
     "@types/node": "^16.3.1",
     "@types/uuid": "^8.3.1",
+    "babel-plugin-module-resolver": "^4.1.0",
+    "babel-plugin-transform-typescript-metadata": "^0.3.2",
     "husky": "^7.0.1",
     "lint-staged": "^11.1.2",
     "prettier": "2.3.2",
@@ -28,5 +41,22 @@
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
-  }
+  },
+  "description": "Discordjs bot framework",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pedrol3001/Discord-Oasis.git"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "framework",
+    "commands",
+    "plugins",
+    "modular"
+  ],
+  "bugs": {
+    "url": "https://github.com/pedrol3001/Discord-Oasis/issues"
+  },
+  "homepage": "https://github.com/pedrol3001/Discord-Oasis#readme"
 }
