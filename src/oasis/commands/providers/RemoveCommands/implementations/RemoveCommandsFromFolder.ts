@@ -1,7 +1,7 @@
 import fs from 'fs';
 import Discord from 'discord.js';
-import { ICommand } from '@interfaces/ICommand';
-import { OasisError } from '@error/OasisError';
+import { ICommand } from 'interfaces/ICommand';
+import { OasisError } from 'error/OasisError';
 import { IRemoveCommands } from '../IRemoveCommands';
 
 class RemoveCommandsFromFolder implements IRemoveCommands {
@@ -20,7 +20,7 @@ class RemoveCommandsFromFolder implements IRemoveCommands {
 
         collection.delete(command.name);
       }
-    } catch (err) {
+    } catch (err:any) {
       throw new OasisError('Error deleting commands from folder', err, {
         folder: folderPath,
       });

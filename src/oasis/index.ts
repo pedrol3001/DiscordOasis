@@ -2,10 +2,10 @@ import '@repositories/index';
 
 import CommandHandler from 'oasis/commands/index';
 import PluginsHandler from 'oasis/plugins/index';
-import {OasisError} from '@error/OasisError';
-import { Client, Guild, Message, Snowflake } from 'discord.js';
+import {OasisError} from 'error/OasisError';
+import { Client, Guild, Message } from 'discord.js';
 import { IOasisOptions } from '../interfaces/IOasisOptions';
-import { IPluginsHanlder } from '@interfaces/IPluginsHandler';
+import { IPluginsHanlder } from 'interfaces/IPluginsHandler';
 import { GenericObject } from 'utils/types';
 
 class Oasis {
@@ -13,25 +13,36 @@ class Oasis {
 
   readonly plugins_handler: IPluginsHanlder;
 
-  private guildLoader : (guild_id) => Promise<GenericObject>;
-  private guildCreator: (guild: GenericObject) => Promise<GenericObject> ;
+  private _guildLoader : ((guild_id:string) => Promise<GenericObject>) | undefined;
+  private _guildCreator : ((guild: GenericObject) => Promise<GenericObject>) | undefined;
 
   constructor(options: IOasisOptions) {
-    const { plugins, commands_folder, shard_count, global_prefix, command_file_extension } = options;
+    const { plugins, commands_folder, shard_count, global_prefix } = options;
 
     this.client = new Client({ shardCount: shard_count });
-    this.client.command_handler = new CommandHandler(commands_folder, command_file_extension, global_prefix);
+    this.client.command_handler = new CommandHandler(commands_folder, global_prefix);
+
     this.plugins_handler = new PluginsHandler(plugins);
+
+    this._guildLoader = undefined;
 
     this.setDefaultCallbacks();
   }
 
-  public setGuildsLoader(guildGetter : (guild_id : Snowflake) => Promise<GenericObject>) : void{
-    this.guildLoader = guildGetter;
+  public set guildLoader(loader: (guild_id:string) => Promise<GenericObject>) {
+    this._guildLoader = loader;
   }
 
-  public setGuildCreator(guildSetter: (guild: GenericObject) => Promise<GenericObject>): void{
-    this.guildCreator = guildSetter;
+  public set guildCreator(creator: (guild: GenericObject) => Promise<GenericObject>) {
+    this._guildCreator = creator;
+  }
+
+  set pluginLoader(pluginLoader: (plugin_id:string) => Promise<GenericObject>) {
+    this.plugins_handler.pluginLoader = pluginLoader;
+  }
+
+  set pluginCreator(pluginCreator: (plugin: GenericObject) => Promise<GenericObject>) {
+    this.plugins_handler.pluginCreator = pluginCreator;
   }
 
   private setDefaultCallbacks(): void {
@@ -45,7 +56,7 @@ class Oasis {
 
         this.client.guilds.cache.map(async (guild) => {
           const defaultGuild: any = new Object(guild.id);
-          const guildFromDb = await this.guildLoader(guild.id);
+          const guildFromDb = this._guildLoader ? await this._guildLoader(guild.id) : undefined;
 
           if (guildFromDb) {
             Object.assign(guild, guildFromDb);
@@ -56,19 +67,19 @@ class Oasis {
       );
 
       PluginsHandler.setup(this.client.command_handler);
-      client.user.setActivity('Online!');
+      client.user?.setActivity('Online!');
       console.log('Ready!');
     });
 
     client.on('message', async (msg: Message): Promise<void> => {
-      msg.manager = PluginsHandler.plugins[msg.command.plugin_id || 'default'];
+      msg.manager = PluginsHandler.plugins.get(msg.command?.plugin_id || 'default');
       await CommandHandler.handle(msg);
     });
 
     client.on('guildCreate', async (guild: Guild): Promise<void> => {
-      const guildFromDb = await this.guildCreator(guild);
-      console.log(`Joinned guild ${guildFromDb.id} called ${guild.name}`);
-      guild.systemChannel.send('Welcome to oasisBot!');
+      const guildFromDb = this._guildCreator ? await this._guildCreator(guild) : undefined;
+      console.log(`Joinned guild ${guildFromDb?.id} called ${guild.name}`);
+      guild.systemChannel?.send('Welcome to oasisBot!');
     });
 
     client.on('error', (err) => {

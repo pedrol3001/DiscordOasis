@@ -1,10 +1,10 @@
 import Discord, { Message } from 'discord.js';
 
-import {ICommand} from '@interfaces/ICommand';
-import {OasisError} from '@error/OasisError';
+import {ICommand} from 'interfaces/ICommand';
+import {OasisError} from 'error/OasisError';
 
 import { CommandError } from './error/CommandError';
-import { ICommandHandler } from '@interfaces/ICommandHandler';
+import { ICommandHandler } from 'interfaces/ICommandHandler';
 import { IAddCommands } from './providers/AddCommands/IAddCommands';
 import { IRemoveCommands } from './providers/RemoveCommands/IRemoveCommands';
 import { AddCommandsFromFolder } from './providers/AddCommands/implementations/AddCommandsFromFolder';
@@ -41,6 +41,9 @@ class CommandHandler implements ICommandHandler {
       new RolesMicroHandler(),
       new CooldownsMicroHandler(),
     ];
+
+    this._on_begin_micro_handlers = [];
+    this._on_end_micro_handlers = [];
   }
 
   public addMicroHandler(handler: IMicroHandler, onBegin: IMicroHandlerExecutionMode = 'async') {
@@ -57,9 +60,9 @@ class CommandHandler implements ICommandHandler {
     }
   }
 
-  public edit(ConfType: new () => IAddCommands | IRemoveCommands, ...args) {
+  public edit(ConfType: new () => IAddCommands | IRemoveCommands, ...args: string[]) {
     const provider = new ConfType();
-    provider.handle(this._commands, args);
+    provider.handle(this._commands, ...args);
   }
 
   public async handle(msg: Message): Promise<void> {
@@ -70,7 +73,7 @@ class CommandHandler implements ICommandHandler {
         msg.prefix = this._global_prefix;
       }
 
-      if (msg.guild.prefix && msg.content.startsWith(msg.guild.prefix)) {
+      if (msg.guild?.prefix && msg.content.startsWith(msg.guild.prefix)) {
         msg.prefix = msg.guild.prefix; // guild prefix
       }
 
@@ -82,7 +85,8 @@ class CommandHandler implements ICommandHandler {
 
       // composed commands names
       while (!msg.command && msg.args.length > 0) {
-        command_msg.push(msg.args.shift().toLowerCase());
+        command_msg.push(msg.args.shift()?.toLowerCase() || "");
+
         msg.command =
           this._commands.get(command_msg.join(' ')) ||
           this._commands.find((cmd: ICommand) => {
@@ -103,11 +107,11 @@ class CommandHandler implements ICommandHandler {
       }
 
       await msg.command.execute(msg);
-    } catch (err) {
+    } catch (err:any) {
 
       if (err instanceof CommandError) return await err.send();
 
-      throw new OasisError('Error executting command', err, {
+      throw new OasisError('Error executting command', err , {
         message: msg,
       });
     }

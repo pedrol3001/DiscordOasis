@@ -44,8 +44,8 @@ class DynamicList extends DynamicMessage {
     }
     list_aux = this.list.slice(this.counter * this.pageSize, (this.counter + 1) * this.pageSize);
     lyricsEmbed.setDescription(list_aux.join('\n'));
-    if (lyricsEmbed.description.length >= 2048){
-      lyricsEmbed.description = `${lyricsEmbed.description.substr(0, 2045)}...`;
+    if (lyricsEmbed.description?.length || 0 >= 2048){
+      lyricsEmbed.description = `${lyricsEmbed.description?.substr(0, 2045) || ""}...`;
     }
     return lyricsEmbed;
   }

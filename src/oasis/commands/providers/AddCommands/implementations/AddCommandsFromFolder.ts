@@ -1,7 +1,7 @@
 import fs from 'fs';
 import Discord from 'discord.js';
-import { ICommand } from '@interfaces/ICommand';
-import { OasisError } from '@error/OasisError';
+import { ICommand } from 'interfaces/ICommand';
+import { OasisError } from 'error/OasisError';
 import { IAddCommands } from '../IAddCommands';
 
 class AddCommandsFromFolder implements IAddCommands {
@@ -28,7 +28,7 @@ class AddCommandsFromFolder implements IAddCommands {
 
         collection.set(command.name, command); // Add command to collection
       }
-    } catch (err) {
+    } catch (err:any) {
       throw new OasisError('Error adding commands from folder', err, {
         folder: folderPath[0],
       });

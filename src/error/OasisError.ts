@@ -1,5 +1,4 @@
 class OasisError extends Error {
-  private firstStack: string | undefined = undefined;
 
   constructor(msg: string, cause?: Error, public metadata?: Record<string, unknown>) {
     super(msg);

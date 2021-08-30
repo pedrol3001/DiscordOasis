@@ -1,4 +1,4 @@
-import { ICommandHandler } from '@interfaces/ICommandHandler';
+import { ICommandHandler } from 'interfaces/ICommandHandler';
 
 import { v4 as uuidv4 } from 'uuid';
 import { AddCommandsFromFolder } from 'oasis/commands/providers/AddCommands/implementations/AddCommandsFromFolder';

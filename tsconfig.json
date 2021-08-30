@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es2021",
     "module": "commonjs",
-    "rootDir": "./",
+    "rootDir": "./src",
     "baseUrl": "./src",
     "paths": {
       "@error/*": ["error/*"],
@@ -12,12 +12,22 @@
       "@plugins/*": ["oasis/plugins/*"]
     },
     "outDir": "./dist",
-    "esModuleInterop": true,
+    "removeComments": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "alwaysStrict": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "declaration": true,
+    "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
-    "sourceMap": true,
     "emitDecoratorMetadata": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true
-  }
+    "stripInternal": true,
+    "moduleResolution": "node",
+    "importHelpers": true
+  },
+  "include": ["./src/"],
 }

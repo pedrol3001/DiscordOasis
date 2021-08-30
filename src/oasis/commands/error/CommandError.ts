@@ -1,5 +1,4 @@
 import Discord from 'discord.js';
-import {ICommand} from '@interfaces/ICommand';
 
 class CommandError {
   constructor(
@@ -8,7 +7,7 @@ class CommandError {
   ) {}
 
   async send(): Promise<void> {
-    await this.channel.send(this.message);
+    await this.channel?.send(this.message || 'An error occurred.');
   }
 }
 
