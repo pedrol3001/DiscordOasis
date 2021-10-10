@@ -1,20 +1,30 @@
-import { Oasis } from "oasis/index";
-import { OasisError } from "error/OasisError";
-import { IOasisOptions } from "interfaces/IOasisOptions";
-import { AbstractPlugin } from "oasis/plugins/class/AbstractPlugin";
-import { IMicroHandler } from "oasis/commands/handlers/IMicroHandler";
-import { IMicroHandlerExecutionMode } from "oasis/commands/index";
-import { ICommand, ICommandGroups } from 'interfaces/ICommand'
-import Discord from 'discord.js';
+export { Oasis } from "oasis/index";
+export { OasisError } from "error/OasisError";
+export { IOasisOptions } from "interfaces/IOasisOptions";
+export { AbstractPlugin } from "oasis/plugins/class/AbstractPlugin";
+export { IMicroHandler } from "oasis/commands/handlers/IMicroHandler";
+export { IMicroHandlerExecutionMode } from "oasis/commands/index";
+export { ICommand, ICommandGroups } from 'interfaces/ICommand'
+//export Discord from 'discord.js';
 
-export {
-  Oasis,
-  IOasisOptions,
-  ICommand,
-  ICommandGroups,
-  AbstractPlugin,
-  IMicroHandler,
-  OasisError,
-  IMicroHandlerExecutionMode,
-  Discord
-};
+import {ICommand} from 'interfaces/ICommand'
+import {AbstractPlugin} from 'oasis/plugins/class/AbstractPlugin'
+import {ICommandHandler} from 'interfaces/ICommandHandler'
+
+
+declare module 'discord.js' {
+  export interface Client {
+    command_handler: ICommandHandler;
+  }
+
+  export interface Guild {
+    prefix: string;
+  }
+
+  export interface Message {
+    args: Array<string>;
+    command: ICommand | undefined;
+    prefix: string;
+    manager: AbstractPlugin | undefined;
+  }
+}
