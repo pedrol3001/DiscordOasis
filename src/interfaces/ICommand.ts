@@ -1,4 +1,4 @@
-import Discord, { BitFieldResolvable, PermissionString } from 'discord.js';
+import {Message, BitFieldResolvable, PermissionString } from 'discord.js';
 
 export type ICommandGroups = 'guildOnly' | 'global' | 'dmOnly';
 
@@ -15,5 +15,5 @@ export interface ICommand {
 
   plugin_id?: string;
 
-  execute(msg: Discord.Message): Promise<void>;
+  execute(msg: Message): Promise<void>;
 }

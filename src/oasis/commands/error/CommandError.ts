@@ -1,9 +1,10 @@
-import Discord from 'discord.js';
+import {TextChannel, NewsChannel, DMChannel } from "discord.js";
+
 
 class CommandError {
   constructor(
     public message?: string,
-    public channel?: Discord.TextChannel | Discord.DMChannel | Discord.NewsChannel,
+    public channel?: TextChannel | DMChannel | NewsChannel,
   ) {}
 
   async send(): Promise<void> {

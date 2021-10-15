@@ -1,0 +1,22 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Guild {
+  id      String @id @unique
+  prefix  String?
+}
+
+
+model Plugin {
+  id    String @id @unique
+  name  String
+}

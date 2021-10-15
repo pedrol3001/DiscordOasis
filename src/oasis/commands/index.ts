@@ -1,4 +1,4 @@
-import Discord, { Message } from 'discord.js';
+import { Collection, Message } from 'discord.js';
 
 import {ICommand} from 'interfaces/ICommand';
 import {OasisError} from 'error/OasisError';
@@ -18,7 +18,7 @@ import { CooldownsMicroHandler } from './handlers/implementations/CooldownsMicro
 export type IMicroHandlerExecutionMode = 'onBegin' | 'async' | 'onEnd';
 
 class CommandHandler implements ICommandHandler {
-  private _commands: Discord.Collection<string, ICommand> = new Discord.Collection<string, ICommand>();
+  private _commands: Collection<string, ICommand> = new Collection<string, ICommand>();
 
   private readonly _global_prefix: string;
 

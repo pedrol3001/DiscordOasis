@@ -9,7 +9,8 @@
       "@interfaces/*": ["interfaces/*"],
       "@oasis/*": ["oasis/*"],
       "@commands/*": ["oasis/commands/*"],
-      "@plugins/*": ["oasis/plugins/*"]
+      "@plugins/*": ["oasis/plugins/*"],
+      "@database/*": ["database/*"]
     },
     "outDir": "./dist",
     "removeComments": true,

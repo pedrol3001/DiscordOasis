@@ -11,3 +11,15 @@ test/
 docs/
 tsconfig.json
 tslint.json
+src/
+.prettierignore
+.prettierrc.json
+babel.config.js
+yarn-error.log
+yarn.lock
+.editorconfig
+prisma/
+*.tgz
+.env
+.local-pack
+

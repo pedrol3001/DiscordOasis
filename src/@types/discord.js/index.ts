@@ -1,4 +1,4 @@
-/*import {ICommand} from 'interfaces/ICommand'
+import {ICommand} from 'interfaces/ICommand'
 import {AbstractPlugin} from 'oasis/plugins/class/AbstractPlugin'
 import {ICommandHandler} from 'interfaces/ICommandHandler'
 
@@ -18,4 +18,4 @@ declare module 'discord.js' {
     prefix: string;
     manager: AbstractPlugin | undefined;
   }
-}*/
+}
