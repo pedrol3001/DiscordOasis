@@ -13,10 +13,12 @@ generator client {
 model Guild {
   id      String @id @unique
   prefix  String?
+  plugins Plugin[]
 }
 
 
 model Plugin {
   id    String @id @unique
-  name  String
+  name  String @unique
+  guilds Guild[]
 }

@@ -10,7 +10,9 @@
       "@oasis/*": ["oasis/*"],
       "@commands/*": ["oasis/commands/*"],
       "@plugins/*": ["oasis/plugins/*"],
-      "@database/*": ["database/*"]
+      "@database/*": ["database/*"],
+      "@guild/*": ["repositories/guild/*"],
+      "@plugin/*": ["repositories/plugin/*"]
     },
     "outDir": "./dist",
     "removeComments": true,

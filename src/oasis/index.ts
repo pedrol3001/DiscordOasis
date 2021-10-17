@@ -11,6 +11,8 @@ import { IOasisOptions } from '@interfaces/IOasisOptions';
 import { IPluginsHanlder } from '@interfaces/IPluginsHandler';
 import { Message } from 'discord.js';
 import { Guild } from 'discord.js';
+import { LoadGuildsController } from '@guild/useCases/LoadGuilds/LoadGuildsController';
+import { CreateGuildController } from '@guild/useCases/CreateGuild/CreateGuildController';
 
 
 class Oasis extends Client {
@@ -34,14 +36,8 @@ class Oasis extends Client {
 
     this.once('ready', async () => {
 
-      await Promise.all(
-
-        this.guilds.cache.map(async (guild) => {
-          const guildFromDb = await prisma.guild.findUnique({where: {id: guild.id}});
-          if (guildFromDb) Object.assign(guild, guildFromDb);
-        }),
-      );
-
+      await LoadGuildsController.handle(this);
+    
       PluginsHandler.setup(this.command_handler);
       this.user?.setActivity('Online!');
       console.log('Ready!');
@@ -53,10 +49,8 @@ class Oasis extends Client {
     });
 
     this.on('guildCreate', async (guild: Guild): Promise<void> => {
-      const guildFromDb = await prisma.guild.create({data:{id: guild.id}});
-
-      console.log(`Joinned guild ${guildFromDb?.id} called ${guild.name}`);
-      guild.systemChannel?.send('Welcome to oasisBot!');
+      const newGuild = await CreateGuildController.handle(guild);
+      console.log(`Joinned guild ${newGuild.id} called ${guild.name}`);
     });
 
     this.on('error', (err) => {
