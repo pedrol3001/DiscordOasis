@@ -1,7 +1,7 @@
 import { Collection, Message } from 'discord.js';
 
 import {ICommand} from 'interfaces/ICommand';
-import {OasisError} from 'error/OasisError';
+import {OasisError} from 'log/OasisError';
 
 import { CommandError } from './error/CommandError';
 import { ICommandHandler } from 'interfaces/ICommandHandler';

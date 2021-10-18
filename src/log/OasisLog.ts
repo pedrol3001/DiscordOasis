@@ -1,0 +1,6 @@
+class OasisLog {
+
+
+}
+
+export { OasisLog }

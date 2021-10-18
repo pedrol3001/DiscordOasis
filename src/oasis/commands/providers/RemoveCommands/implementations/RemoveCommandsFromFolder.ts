@@ -1,7 +1,7 @@
 import fs from 'fs';
 import Discord from 'discord.js';
 import { ICommand } from 'interfaces/ICommand';
-import { OasisError } from 'error/OasisError';
+import { OasisError } from 'log/OasisError';
 import { IRemoveCommands } from '../IRemoveCommands';
 
 class RemoveCommandsFromFolder implements IRemoveCommands {

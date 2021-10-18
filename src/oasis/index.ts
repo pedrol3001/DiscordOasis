@@ -6,7 +6,7 @@ import CommandHandler from 'oasis/commands/index';
 import PluginsHandler from 'oasis/plugins/index';
 
 import { Client } from 'discord.js'
-import { OasisError } from 'error/OasisError';
+import { OasisError } from 'log/OasisError';
 import { IOasisOptions } from '@interfaces/IOasisOptions';
 import { IPluginsHanlder } from '@interfaces/IPluginsHandler';
 import { Message } from 'discord.js';

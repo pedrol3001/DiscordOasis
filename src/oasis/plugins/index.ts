@@ -22,11 +22,7 @@ class PluginsHandler implements IPluginsHanlder {
   setup(command_handler: ICommandHandler) {
     this._plugins.forEach(async (plugin: AbstractPlugin, key: string) => {
       const name = this.constructor.name;
-      let pluginDb = await GetPluginByNameController.handle(name);
-
-      if(!pluginDb) {
-        pluginDb = await CreatePluginController.handle({name});
-      }
+      const pluginDb = (await GetPluginByNameController.handle(name)) || (await CreatePluginController.handle({name})); 
       
       await plugin.setup(pluginDb.id);
       await plugin.set(command_handler);

@@ -7,7 +7,6 @@ class OasisError extends Error {
 
     if (cause) {
       const causeMessage = cause instanceof Error ? cause.message : `Invalid error object: ${JSON.stringify(cause)}`;
-
       this.message = `${this.message}: ${causeMessage}`;
     }
 
