@@ -6,6 +6,7 @@ export { IMicroHandler } from "./oasis/commands/handlers/IMicroHandler";
 export { IMicroHandlerExecutionMode } from "./oasis/commands/index";
 export { ICommand, ICommandGroups } from "./interfaces/ICommand"
 export { prisma } from "./database";
-export * from 'discord.js';
+
+
 
 
