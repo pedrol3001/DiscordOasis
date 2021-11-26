@@ -1,5 +1,5 @@
 import { Plugin } from '@prisma/client';
-import { IPluginsRepository } from '@plugin/prisma/IPluginsRepository';
+import { IPluginsRepository } from '../../../plugin/prisma/IPluginsRepository';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()

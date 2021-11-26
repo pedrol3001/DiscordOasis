@@ -1,10 +1,10 @@
 import { AbstractPlugin } from './class/AbstractPlugin';
-import { ICommandHandler } from 'interfaces/ICommandHandler';
-import { IPluginsHanlder } from 'interfaces/IPluginsHandler';
-import { GetPluginByNameController } from '@plugin/useCases/GetPluginByName/GetPluginByNameController';
-import { CreatePluginController } from '@plugin/useCases/CreatePlugin/CreatePluginController';
+import { ICommandHandler } from '../../interfaces/ICommandHandler';
+import { IPluginsHandler } from '../../interfaces/IPluginsHandler';
+import { GetPluginByNameController } from '../../repositories/plugin/useCases/GetPluginByName/GetPluginByNameController';
+import { CreatePluginController } from '../../repositories/plugin/useCases/CreatePlugin/CreatePluginController';
 
-class PluginsHandler implements IPluginsHanlder {
+class PluginsHandler implements IPluginsHandler {
   private _plugins: Map<string, AbstractPlugin>;
   
   constructor(plugins_managers: AbstractPlugin[] | undefined) {

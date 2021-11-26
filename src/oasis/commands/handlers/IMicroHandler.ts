@@ -1,7 +1,7 @@
-import Discord from 'discord.js';
+import { Message } from 'discord.js';
 
 interface IMicroHandler {
-  handle(msg: Discord.Message): Promise<void>;
+  handle(msg: Message): Promise<void>;
 }
 
 export { IMicroHandler };

@@ -3,17 +3,6 @@
     "target": "es2021",
     "module": "commonjs",
     "rootDir": "./src",
-    "baseUrl": "./src",
-    "paths": {
-      "@error/*": ["error/*"],
-      "@interfaces/*": ["interfaces/*"],
-      "@oasis/*": ["oasis/*"],
-      "@commands/*": ["oasis/commands/*"],
-      "@plugins/*": ["oasis/plugins/*"],
-      "@database/*": ["database/*"],
-      "@guild/*": ["repositories/guild/*"],
-      "@plugin/*": ["repositories/plugin/*"]
-    },
     "outDir": "./dist",
     "removeComments": true,
     "strict": true,

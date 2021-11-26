@@ -1,4 +1,4 @@
-import { IGuildsRepository } from '@guild/prisma/IGuildsRepository';
+import { IGuildsRepository } from '../../prisma/IGuildsRepository';
 import { inject, injectable } from 'tsyringe';
 
 interface IPrefixChange {

@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import { MessageEmbedOptions, MessageEmbed } from 'discord.js';
 
 import { DynamicMessage, OnReaction } from 'discord-dynamic-messages';
 
@@ -7,9 +7,9 @@ class DynamicList extends DynamicMessage {
   private pageSize: number;
   private list: Array<string>;
   private counter: number;
-  private options: Discord.MessageEmbedOptions;
+  private options: MessageEmbedOptions;
 
-  public constructor(name: string, list: Array<string>, pageSize: number, options: Discord.MessageEmbedOptions) {
+  public constructor(name: string, list: Array<string>, pageSize: number, options: MessageEmbedOptions) {
     super();
     this.name = name;
     this.options = options;
@@ -30,8 +30,8 @@ class DynamicList extends DynamicMessage {
     else this.counter += 1;
   }
 
-  protected render(): Discord.MessageEmbed {
-    const lyricsEmbed = new Discord.MessageEmbed(this.options);
+  protected render(): MessageEmbed {
+    const lyricsEmbed = new MessageEmbed(this.options);
     lyricsEmbed.setTitle(
       this.list.length > 0
         ? `${this.name} - ${this.counter + 1}/${Math.ceil(this.list.length / this.pageSize)}`

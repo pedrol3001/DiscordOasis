@@ -1,10 +1,10 @@
 import { Collection, Message } from 'discord.js';
 
-import {ICommand} from 'interfaces/ICommand';
-import {OasisError} from 'log/OasisError';
+import {ICommand} from '../../interfaces/ICommand';
+import {OasisError} from '../../log/OasisError';
 
 import { CommandError } from './error/CommandError';
-import { ICommandHandler } from 'interfaces/ICommandHandler';
+import { ICommandHandler } from '../../interfaces/ICommandHandler';
 import { IAddCommands } from './providers/AddCommands/IAddCommands';
 import { IRemoveCommands } from './providers/RemoveCommands/IRemoveCommands';
 import { AddCommandsFromFolder } from './providers/AddCommands/implementations/AddCommandsFromFolder';
@@ -111,7 +111,7 @@ class CommandHandler implements ICommandHandler {
 
       if (err instanceof CommandError) return await err.send();
 
-      throw new OasisError('Error executting command', err , {
+      throw new OasisError('Error executing command', err , {
         message: msg,
       });
     }

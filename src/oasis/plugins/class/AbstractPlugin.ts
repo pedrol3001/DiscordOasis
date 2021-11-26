@@ -1,7 +1,7 @@
-import { OasisError } from 'index';
-import { ICommandHandler } from 'interfaces/ICommandHandler';
-import { AddCommandsFromFolder } from 'oasis/commands/providers/AddCommands/implementations/AddCommandsFromFolder';
-import { RemoveCommandsFromPlugin } from 'oasis/commands/providers/RemoveCommands/implementations/RemoveCommandsFromPlugin';
+import { OasisError } from '../../../log/OasisError';
+import { ICommandHandler } from '../../../interfaces/ICommandHandler';
+import { AddCommandsFromFolder } from '../../commands/providers/AddCommands/implementations/AddCommandsFromFolder';
+import { RemoveCommandsFromPlugin } from '../../commands/providers/RemoveCommands/implementations/RemoveCommandsFromPlugin';
 
 
 

@@ -1,9 +1,9 @@
-import Discord from 'discord.js';
-import { CommandError } from 'oasis/commands/error/CommandError';
+import { Message } from 'discord.js';
+import { CommandError } from '../../../commands/error/CommandError';
 import { IMicroHandler } from '../IMicroHandler';
 
 class PermissionsMicroHandler implements IMicroHandler {
-  async handle(msg: Discord.Message): Promise<void> {
+  async handle(msg: Message): Promise<void> {
     // permissions handler
     if (msg.guild && msg.command?.permissions) {
       for (const requiredPermission of msg.command.permissions) {

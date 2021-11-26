@@ -1,11 +1,11 @@
-import Discord from 'discord.js';
-import { CommandError } from 'oasis/commands/error/CommandError';
+import { Message } from 'discord.js';
+import { CommandError } from '../../../commands/error/CommandError';
 import { IMicroHandler } from '../IMicroHandler';
 
 class ArgsMicroHandler implements IMicroHandler {
 
-  async handle(msg: Discord.Message): Promise<void> {
-    // filtter args handler
+  async handle(msg: Message): Promise<void> {
+    // filter args handler
     if ((msg.command?.args && msg.args.length === 0) || (!msg.command?.args && msg.args.length !== 0)) {
       const reply =
         `You didn't provide any arguments, ${msg.author}!\n` +

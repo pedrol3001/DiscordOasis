@@ -1,18 +1,18 @@
-import Discord from 'discord.js';
-import { CommandError } from 'oasis/commands/error/CommandError';
+import { Collection, Message } from 'discord.js';
+import { CommandError } from '../../../commands/error/CommandError';
 import { IMicroHandler } from '../IMicroHandler';
 
 class CooldownsMicroHandler implements IMicroHandler {
-  private cooldowns: Discord.Collection<string | undefined, Discord.Collection<string, number>>;
+  private cooldowns: Collection<string | undefined, Collection<string, number>>;
 
   constructor() {
-    this.cooldowns = new Discord.Collection<string | undefined, Discord.Collection<string, number>>();
+    this.cooldowns = new Collection<string | undefined, Collection<string, number>>();
   }
 
-  async handle(msg: Discord.Message): Promise<void> {
+  async handle(msg: Message): Promise<void> {
     // cooldowns handler
     if (!this.cooldowns.has(msg.command?.name)) {
-      this.cooldowns.set(msg.command?.name, new Discord.Collection());
+      this.cooldowns.set(msg.command?.name, new Collection());
     }
 
     const now = Date.now();

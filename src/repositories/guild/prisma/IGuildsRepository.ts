@@ -1,5 +1,5 @@
 import { Guild } from '@prisma/client'
-import { ConditionalArray } from 'utils/types';
+import { ConditionalArray } from '../../../utils/types';
 
 interface includeGuild {
   plugins: boolean;

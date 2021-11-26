@@ -1,10 +1,9 @@
 import { container } from 'tsyringe';
 
-import { GuildsRepository } from '@guild/prisma/GuildsRepository';
-import { IGuildsRepository } from '@guild/prisma/IGuildsRepository';
-import { IPluginsRepository } from '@plugin/prisma/IPluginsRepository';
-import { PluginsRepository } from '@plugin/prisma/PluginsRepository';
-
+import { GuildsRepository } from '../repositories/guild/prisma/GuildsRepository';
+import { IGuildsRepository } from '../repositories/guild/prisma/IGuildsRepository';
+import { IPluginsRepository } from '../repositories/plugin/prisma/IPluginsRepository';
+import { PluginsRepository } from '../repositories/plugin/prisma/PluginsRepository';
 
 
 container.registerSingleton<IGuildsRepository>('GuildsRepository', GuildsRepository);

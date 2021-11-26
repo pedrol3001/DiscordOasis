@@ -1,22 +1,22 @@
-import '@repositories/index';
+import '../repositories';
 
-import { prisma } from '@database/index';
+import { prisma } from '../database';
 
-import CommandHandler from 'oasis/commands/index';
-import PluginsHandler from 'oasis/plugins/index';
+import CommandHandler from './commands';
+import PluginsHandler from './plugins';
 
 import { Client } from 'discord.js'
-import { OasisError } from 'log/OasisError';
-import { IOasisOptions } from '@interfaces/IOasisOptions';
-import { IPluginsHanlder } from '@interfaces/IPluginsHandler';
+import { OasisError } from '../log/OasisError';
+import { IOasisOptions } from '../interfaces/IOasisOptions';
+import { IPluginsHandler } from '../interfaces/IPluginsHandler';
 import { Message } from 'discord.js';
 import { Guild } from 'discord.js';
-import { LoadGuildsController } from '@guild/useCases/LoadGuilds/LoadGuildsController';
-import { CreateGuildController } from '@guild/useCases/CreateGuild/CreateGuildController';
+import { LoadGuildsController } from '../repositories/guild/useCases/LoadGuilds/LoadGuildsController';
+import { CreateGuildController } from '../repositories/guild/useCases/CreateGuild/CreateGuildController';
 
 
 class Oasis extends Client {
-  readonly plugins_handler: IPluginsHanlder;
+  readonly plugins_handler: IPluginsHandler;
 
   constructor(options: IOasisOptions) {
 
@@ -50,7 +50,7 @@ class Oasis extends Client {
 
     this.on('guildCreate', async (guild: Guild): Promise<void> => {
       const newGuild = await CreateGuildController.handle(guild);
-      console.log(`Joinned guild ${newGuild.id} called ${guild.name}`);
+      console.log(`Joined guild ${newGuild.id} called ${guild.name}`);
     });
 
     this.on('error', (err) => {

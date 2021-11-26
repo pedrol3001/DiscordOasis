@@ -1,7 +1,7 @@
-import { prisma } from '@database/index';
+import { prisma } from '../../../database/index';
 import { Guild, Prisma } from '@prisma/client'
 
-import { ConditionalArray } from 'utils/types';
+import { ConditionalArray } from '../../../utils/types';
 import { IGuildsRepository, includeGuild } from './IGuildsRepository';
 
 class GuildsRepository implements IGuildsRepository {

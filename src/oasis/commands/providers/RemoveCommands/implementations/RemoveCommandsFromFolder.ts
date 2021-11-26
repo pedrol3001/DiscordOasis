@@ -1,16 +1,15 @@
-import fs from 'fs';
-import Discord from 'discord.js';
-import { ICommand } from 'interfaces/ICommand';
-import { OasisError } from 'log/OasisError';
+import { Collection } from 'discord.js';
+import { ICommand } from '../../../../../interfaces/ICommand';
+import { OasisError } from '../../../../../log/OasisError';
+import { readdirSync } from 'fs';
 import { IRemoveCommands } from '../IRemoveCommands';
 
 class RemoveCommandsFromFolder implements IRemoveCommands {
-  public handle(collection: Discord.Collection<string, ICommand>, ...args: string[]): void {
+  public handle(collection: Collection<string, ICommand>, ...args: string[]): void {
     const [folderPath] = args;
 
     try {
-      const commandFiles = fs
-        .readdirSync(folderPath)
+      const commandFiles = readdirSync(folderPath)
         .filter((file) => file.endsWith(process.env.NODE_ENV === 'production' ? '.js' : '.ts'));
 
       for (const file of commandFiles) {

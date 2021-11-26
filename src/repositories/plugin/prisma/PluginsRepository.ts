@@ -1,7 +1,7 @@
 
-import { prisma } from '@database/index';
+import { prisma } from '../../../database/index';
 import { Plugin, Prisma } from '@prisma/client';
-import { ConditionalArray } from 'utils/types';
+import { ConditionalArray } from '../../../utils/types';
 import { includePlugin, IPluginsRepository } from './IPluginsRepository';
 
 class PluginsRepository implements IPluginsRepository {

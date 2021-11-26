@@ -1,5 +1,5 @@
-import Discord from 'discord.js';
-import { IGuildsRepository } from '@guild/prisma/IGuildsRepository';
+import { Collection, Guild } from 'discord.js';
+import { IGuildsRepository } from '../../prisma/IGuildsRepository';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
@@ -9,7 +9,7 @@ class LoadGuildsUseCase {
     private guildRepository: IGuildsRepository,
   ) {}
 
-  public async execute(guilds: Discord.Collection<string, Discord.Guild>): Promise<void> {
+  public async execute(guilds: Collection<string, Guild>): Promise<void> {
     await Promise.all(
       guilds.map(async (guild) => {
 

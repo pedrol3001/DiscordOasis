@@ -1,6 +1,6 @@
 import { Plugin } from '@prisma/client';
 import { container } from 'tsyringe';
-import { OasisError } from 'log/OasisError';
+import { OasisError } from '../../../../log/OasisError';
 import { GetPluginByNameUseCase } from './GetPluginByNameUseCase';
 
 const GetPluginByNameController = {
