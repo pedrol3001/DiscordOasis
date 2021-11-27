@@ -3,5 +3,5 @@ import { ICommandHandler } from './ICommandHandler';
 
 export interface IPluginsHandler {
   setup(command_handler: ICommandHandler): void;
-  get plugins(): Map<string, AbstractPlugin | undefined>;
+  get plugins(): Map<string, AbstractPlugin>;
 }

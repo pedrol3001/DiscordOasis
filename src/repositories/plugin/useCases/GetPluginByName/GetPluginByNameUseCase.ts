@@ -8,7 +8,7 @@ class GetPluginByNameUseCase {
     @inject('PluginsRepository')
     private pluginRepository: IPluginsRepository,
   ) {}
-  public async execute(name: string): Promise<Plugin | undefined> {
+  public async execute(name: string): Promise<Plugin | null> {
     return await this.pluginRepository.findByName(name);
   }
 }

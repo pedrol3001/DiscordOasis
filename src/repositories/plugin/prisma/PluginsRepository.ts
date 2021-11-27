@@ -11,8 +11,8 @@ class PluginsRepository implements IPluginsRepository {
     this.repository = prisma.plugin;
   }
 
-  async create(data: Plugin): Promise<Plugin> {
-    return await this.repository.create({data});
+  async create(plugin: Plugin): Promise<Plugin> {
+    return await this.repository.create({data: plugin});
   }
 
   async findById<T extends string | Array<string>>(id: T, include?: includePlugin ): Promise<ConditionalArray<Plugin, T>> {
@@ -20,8 +20,8 @@ class PluginsRepository implements IPluginsRepository {
     return (id instanceof Array ? plugins : plugins[0]) as ConditionalArray<Plugin & any, T>;
   }
 
-  async findByName(name: string): Promise<Plugin | undefined> {
-    return await this.repository.findUnique({where:{ name }}) || undefined;
+  async findByName(name: string): Promise<Plugin | null> {
+    return await this.repository.findUnique({where:{ name }});
   }
 }
 

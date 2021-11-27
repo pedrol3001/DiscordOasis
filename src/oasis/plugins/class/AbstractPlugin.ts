@@ -6,14 +6,13 @@ import { RemoveCommandsFromPlugin } from '../../commands/providers/RemoveCommand
 
 
 abstract class AbstractPlugin {
-  id?: string;
+  id: string | undefined;
   name: string;
   commands_folder: string;
 
   constructor(commands_folder: string) {
     this.name = this.constructor.name;
     this.commands_folder = commands_folder;
-
   }
 
   async setup(id: string): Promise<void> {

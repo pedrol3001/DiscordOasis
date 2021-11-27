@@ -24,28 +24,45 @@ class Oasis extends Client {
     const { plugins, commands_folder, global_prefix} = options;
 
     this.command_handler = new CommandHandler(commands_folder, global_prefix);
-    this.plugins_handler = new PluginsHandler(plugins);
+    this.plugins_handler = new PluginsHandler(plugins || []);
 
     this.setDefaultCallbacks();
+  }
 
+  private async setupGuilds(){
+    const guilds = this.guilds.cache;
+
+    await Promise.all(
+      guilds.map(async (guild) => {
+        try{
+          await CreateGuildController.handle({ id: guild.id, prefix: null });
+          console.log(`Created guild ${guild.name}. ${guild.id}`);
+        }catch(err){
+          console.warn(`Guild ${guild.id} already exists. Skipping.`);
+        }
+      }),
+    );
+
+    await LoadGuildsController.handle(this);
+    console.log('Server configured !!');
   }
 
   private setDefaultCallbacks(): void {
-    const PluginsHandler = this.plugins_handler;
-    const CommandHandler = this.command_handler;
+    const pluginsHandler = this.plugins_handler;
+    const commandHandler = this.command_handler;
 
     this.once('ready', async () => {
 
+      await this.setupGuilds();
       await LoadGuildsController.handle(this);
-    
-      PluginsHandler.setup(this.command_handler);
+      pluginsHandler.setup(this.command_handler);
+      
       this.user?.setActivity('Online!');
       console.log('Ready!');
     });
 
     this.on('message', async (msg: Message): Promise<void> => {
-      msg.manager = PluginsHandler.plugins.get(msg.command?.plugin_id || 'default');
-      await CommandHandler.handle(msg);
+      await commandHandler.handle(msg, pluginsHandler);
     });
 
     this.on('guildCreate', async (guild: Guild): Promise<void> => {

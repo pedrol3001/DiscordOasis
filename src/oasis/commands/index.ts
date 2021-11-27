@@ -14,6 +14,7 @@ import { GroupsMicroHandler } from './handlers/implementations/GroupsMicroHandle
 import { PermissionsMicroHandler } from './handlers/implementations/PermissionsMicroHandler';
 import { RolesMicroHandler } from './handlers/implementations/RolesMicroHandler';
 import { CooldownsMicroHandler } from './handlers/implementations/CooldownsMicroHandler';
+import { IPluginsHandler } from '../../interfaces/IPluginsHandler';
 
 export type IMicroHandlerExecutionMode = 'onBegin' | 'async' | 'onEnd';
 
@@ -65,7 +66,7 @@ class CommandHandler implements ICommandHandler {
     provider.handle(this._commands, ...args);
   }
 
-  public async handle(msg: Message): Promise<void> {
+  public async handle(msg: Message, pluginsHandler: IPluginsHandler): Promise<void> {
     try {
       if (msg.author.bot) return;
 
@@ -87,15 +88,17 @@ class CommandHandler implements ICommandHandler {
       while (!msg.command && msg.args.length > 0) {
         command_msg.push(msg.args.shift()?.toLowerCase() || "");
 
-        msg.command =
-          this._commands.get(command_msg.join(' ')) ||
-          this._commands.find((cmd: ICommand) => {
-            return cmd.aliases?.includes(command_msg.join(' '));
-          });
-      }
+        const commandByName = this._commands.get(command_msg.join(' '));
+        const commandByAliases = this._commands.find( cmd => cmd.aliases?.includes(command_msg.join(' ')));
 
+        msg.command = commandByName || commandByAliases || null;
+      }
       if (!msg.command) return;
 
+      const { plugin_id } = msg.command;
+
+      msg.manager = plugin_id ? pluginsHandler.plugins.get(plugin_id) || null : null; 
+   
       for(let handler of this._on_begin_micro_handlers){
         await handler.handle(msg);
       }
