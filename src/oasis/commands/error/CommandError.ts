@@ -8,7 +8,8 @@ class CommandError {
   ) {}
 
   async send(): Promise<void> {
-    await this.channel?.send(this.message || 'An error occurred.');
+    if(this.message === undefined) return;
+    await this.channel?.send(this.message || 'An error occurred. Call Support to report it.');
   }
 }
 
