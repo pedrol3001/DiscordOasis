@@ -15,10 +15,7 @@ class SetGuildPrefixUseCase {
 
   public async execute({ id, prefix }: IPrefixChange): Promise<void> {
     const guild = await this.guildRepository.findById(id);
-
-    guild.prefix = prefix;
-
-    await this.guildRepository.update(guild);
+    await this.guildRepository.update({...guild, prefix});
   }
 }
 

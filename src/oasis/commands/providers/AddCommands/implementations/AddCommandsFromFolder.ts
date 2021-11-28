@@ -27,7 +27,7 @@ class AddCommandsFromFolder implements IAddCommands {
 
         collection.set(command.name, command); // Add command to collection
       }
-    } catch (err:any) {
+    } catch (err) {
       throw new OasisError('Error adding commands from folder', err, {
         folder: folderPath[0],
       });

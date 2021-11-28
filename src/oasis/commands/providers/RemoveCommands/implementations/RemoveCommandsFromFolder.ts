@@ -19,7 +19,7 @@ class RemoveCommandsFromFolder implements IRemoveCommands {
 
         collection.delete(command.name);
       }
-    } catch (err:any) {
+    } catch (err) {
       throw new OasisError('Error deleting commands from folder', err, {
         folder: folderPath,
       });

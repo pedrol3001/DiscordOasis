@@ -5,7 +5,7 @@ import { IMicroHandler } from '../IMicroHandler';
 class RolesMicroHandler implements IMicroHandler {
   async handle(msg: Message): Promise<void> {
     if (msg.guild && msg.command?.roles) {
-      const roles = msg.command.roles.filter((required_role:any) => {
+      const roles = msg.command.roles.filter((required_role: string) => {
         return msg.guild?.roles.cache.some((role) => role.name === required_role) &&
           msg.member?.roles.cache.some((role) => role.name === required_role)
           ? true

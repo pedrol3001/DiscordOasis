@@ -19,9 +19,9 @@ class GuildsRepository implements IGuildsRepository {
     await this.repository.update({where:{id: guild.id}, data: guild});
   }
 
-  async findById<T extends string | Array<string>>(id: T, include?: includeGuild): Promise<ConditionalArray<Guild & any, T>> {
+  async findById<T extends string | Array<string>>(id: T, include?: includeGuild): Promise<ConditionalArray<Guild, T>> {
     const guilds = await this.repository.findMany({where: {id: {in: id }}, include});
-    return (guilds.length === 1 ? guilds : guilds[0]) as ConditionalArray<Guild & any, T>;
+    return (guilds.length === 1 ? guilds : guilds[0]) as ConditionalArray<Guild, T>;
   }
 }
 

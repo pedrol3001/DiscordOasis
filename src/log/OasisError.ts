@@ -1,6 +1,6 @@
 class OasisError extends Error {
 
-  constructor(msg: string, cause?: Error, public metadata?: Record<string, unknown>) {
+  constructor(msg: string, cause?: Error | unknown, public metadata?: Record<string, unknown>) {
     super(msg);
 
     Object.setPrototypeOf(this, OasisError.prototype);

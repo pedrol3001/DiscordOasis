@@ -15,6 +15,7 @@ import { PermissionsMicroHandler } from './handlers/implementations/PermissionsM
 import { RolesMicroHandler } from './handlers/implementations/RolesMicroHandler';
 import { CooldownsMicroHandler } from './handlers/implementations/CooldownsMicroHandler';
 import { IPluginsHandler } from '../../interfaces/IPluginsHandler';
+import { CheckGuildsPluginController } from '../../repositories/guild/useCases/CheckGuildsPlugin/CheckGuildsPluginController';
 
 export type IMicroHandlerExecutionMode = 'onBegin' | 'async' | 'onEnd';
 
@@ -86,35 +87,37 @@ class CommandHandler implements ICommandHandler {
 
       // composed commands names
       while (!msg.command && msg.args.length > 0) {
-        command_msg.push(msg.args.shift()?.toLowerCase() || "");
+        command_msg.push(msg.args.shift()?.toLowerCase() || '');
 
         const commandByName = this._commands.get(command_msg.join(' '));
-        const commandByAliases = this._commands.find( cmd => cmd.aliases?.includes(command_msg.join(' ')));
+        const commandByAliases = this._commands.find((cmd) => cmd.aliases?.includes(command_msg.join(' ')));
 
         msg.command = commandByName || commandByAliases || null;
       }
       if (!msg.command) return;
 
       const { plugin_id } = msg.command;
+      if (msg.guild && plugin_id) {
+        const hasPlugin = await CheckGuildsPluginController.handle([msg.guild?.id], plugin_id);
+        if (!hasPlugin) return;
+      }
+      msg.manager = plugin_id ? pluginsHandler.plugins.get(plugin_id) || null : null;
 
-      msg.manager = plugin_id ? pluginsHandler.plugins.get(plugin_id) || null : null; 
-   
-      for(let handler of this._on_begin_micro_handlers){
+      for (let handler of this._on_begin_micro_handlers) {
         await handler.handle(msg);
       }
 
-      await Promise.all( this._micro_handlers.map(async (handler) => handler.handle(msg)));
+      await Promise.all(this._micro_handlers.map(async (handler) => handler.handle(msg)));
 
-      for(let handler of this._on_end_micro_handlers){
+      for (let handler of this._on_end_micro_handlers) {
         await handler.handle(msg);
       }
 
       await msg.command.execute(msg);
-    } catch (err:any) {
-
+    } catch (err) {
       if (err instanceof CommandError) return await err.send();
 
-      throw new OasisError('Error executing command', err , {
+      throw new OasisError('Error executing command', err, {
         message: msg,
       });
     }

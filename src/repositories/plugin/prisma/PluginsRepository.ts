@@ -1,4 +1,3 @@
-
 import { prisma } from '../../../database/index';
 import { Plugin, Prisma } from '@prisma/client';
 import { ConditionalArray } from '../../../utils/types';
@@ -12,16 +11,19 @@ class PluginsRepository implements IPluginsRepository {
   }
 
   async create(plugin: Plugin): Promise<Plugin> {
-    return await this.repository.create({data: plugin});
+    return await this.repository.create({ data: plugin });
   }
 
-  async findById<T extends string | Array<string>>(id: T, include?: includePlugin ): Promise<ConditionalArray<Plugin, T>> {
-    const plugins = await this.repository.findMany({where: {id: {in: id }}, include});
-    return (id instanceof Array ? plugins : plugins[0]) as ConditionalArray<Plugin & any, T>;
+  async findById<T extends string | Array<string>>(
+    id: T,
+    include?: includePlugin,
+  ): Promise<ConditionalArray<Plugin, T>> {
+    const plugins = await this.repository.findMany({ where: { id: { in: id } }, include });
+    return (id instanceof Array ? plugins : plugins[0]) as ConditionalArray<Plugin, T>;
   }
 
   async findByName(name: string): Promise<Plugin | null> {
-    return await this.repository.findUnique({where:{ name }});
+    return await this.repository.findUnique({ where: { name } });
   }
 }
 
