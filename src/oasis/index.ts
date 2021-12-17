@@ -13,6 +13,7 @@ import { Message } from 'discord.js';
 import { Guild } from 'discord.js';
 import { LoadGuildsController } from '../repositories/guild/useCases/LoadGuilds/LoadGuildsController';
 import { CreateGuildController } from '../repositories/guild/useCases/CreateGuild/CreateGuildController';
+import { OasisLog } from '../logs/OasisLog';
 
 
 class Oasis extends Client {
@@ -36,15 +37,15 @@ class Oasis extends Client {
       guilds.map(async (guild) => {
         try{
           await CreateGuildController.handle({ id: guild.id, prefix: null });
-          console.log(`Created guild ${guild.name}. ${guild.id}`);
+          new OasisLog(`Created guild ${guild.name}. ${guild.id}`).log();
         }catch(err){
-          console.warn(`Guild ${guild.id} already exists. Skipping.`);
+          new OasisLog(`Guild ${guild.id} already exists. Skipping.`).warn();
         }
       }),
     );
 
     await LoadGuildsController.handle(this);
-    console.log('Server configured !!');
+    new OasisLog('Server configured !!').log();
   }
 
   private setDefaultCallbacks(): void {
@@ -58,7 +59,7 @@ class Oasis extends Client {
       pluginsHandler.setup(this.command_handler);
       
       this.user?.setActivity('Online!');
-      console.log('Ready!');
+      new OasisLog('Ready!').log();
     });
 
     this.on('message', async (msg: Message): Promise<void> => {
@@ -67,12 +68,12 @@ class Oasis extends Client {
 
     this.on('guildCreate', async (guild: Guild): Promise<void> => {
       const newGuild = await CreateGuildController.handle(guild);
-      console.log(`Joined guild ${newGuild.id} called ${guild.name}`);
+      new OasisLog(`Joined guild ${newGuild.id} called ${guild.name}`).log();
     });
 
     this.on('error', (err) => {
       if (err instanceof OasisError) err.log();
-      else console.error(err);
+      else new OasisError('Unknown Error', err).log();
     });
 
     this.on('debug', (db) => console.info(db));
