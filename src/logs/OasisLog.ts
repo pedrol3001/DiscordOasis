@@ -3,7 +3,6 @@ class OasisLog {
   private message: string;
 
   constructor(public msg: string, public metadata?: Record<string, unknown>) {
-    Object.setPrototypeOf(this, OasisLog.prototype);
     this.message = msg;
   }
 
