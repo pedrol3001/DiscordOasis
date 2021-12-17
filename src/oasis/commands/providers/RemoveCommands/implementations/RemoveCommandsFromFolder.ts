@@ -1,6 +1,6 @@
 import { Collection } from 'discord.js';
 import { ICommand } from '../../../../../interfaces/ICommand';
-import { OasisError } from '../../../../../log/OasisError';
+import { OasisError } from '../../../../../logs/OasisError';
 import { readdirSync } from 'fs';
 import { IRemoveCommands } from '../IRemoveCommands';
 

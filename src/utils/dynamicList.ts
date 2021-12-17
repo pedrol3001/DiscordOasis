@@ -1,6 +1,6 @@
-import { MessageEmbedOptions, MessageEmbed } from 'discord.js';
+/*import { MessageEmbedOptions, MessageEmbed } from 'discord.js';
 
-import { DynamicMessage, OnReaction } from 'discord-dynamic-messages';
+import { DynamicMessage, OnReaction } from '../libraries/dynamic-messages';
 
 class DynamicList extends DynamicMessage {
   private name: string;
@@ -51,4 +51,4 @@ class DynamicList extends DynamicMessage {
   }
 }
 
-export default DynamicList;
+export default DynamicList;*/

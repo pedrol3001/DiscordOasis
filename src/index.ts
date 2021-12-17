@@ -2,7 +2,7 @@ export * from './@types'
 export * from 'discord.js'
 
 export { Oasis } from './oasis';
-export { OasisError } from "./log/OasisError";
+export { OasisError } from "./logs/OasisError";
 export { IOasisOptions } from "./interfaces/IOasisOptions";
 export { AbstractPlugin } from "./oasis/plugins/class/AbstractPlugin";
 export { IMicroHandler } from "./oasis/commands/handlers/IMicroHandler";

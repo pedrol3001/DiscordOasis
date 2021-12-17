@@ -1,7 +1,7 @@
 import { readdirSync } from 'fs';
 import { Collection } from 'discord.js';
 import { ICommand } from '../../../../../interfaces/ICommand';
-import { OasisError } from '../../../../../log/OasisError';
+import { OasisError } from '../../../../../logs/OasisError';
 import { IAddCommands } from '../IAddCommands';
 
 class AddCommandsFromFolder implements IAddCommands {

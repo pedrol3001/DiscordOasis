@@ -10,7 +10,7 @@
   "author": " <pedrolcr@outlook.com>",
   "license": "MIT",
   "engines": {
-    "node": "14.x"
+    "node": "17.x"
   },
   "scripts": {
     "build": "yarn clear && yarn build:esm",
@@ -20,26 +20,28 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@types/node": "^16.3.1",
-    "@types/uuid": "^8.3.1",
-    "@types/ws": "^7.4.7",
+    "@types/node": "^17.0.0",
+    "@types/node-emoji": "^1.8.1",
+    "@types/uuid": "^8.3.3",
+    "@types/ws": "^8.2.2",
     "babel-plugin-module-resolver": "^4.1.0",
     "babel-plugin-transform-typescript-metadata": "^0.3.2",
-    "husky": "^7.0.1",
-    "lint-staged": "^11.1.2",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.1.2",
     "local-package-publisher": "^1.0.4",
-    "prettier": "2.3.2",
+    "prettier": "2.5.1",
     "ts-node-dev": "^1.1.8",
-    "typescript": "^4.3.5"
+    "typescript": "^4.5.4"
   },
   "dependencies": {
-    "@prisma/client": "^3.2.1",
-    "discord-dynamic-messages": "^4.0.0",
-    "discord.js": "^12.5.3",
-    "prisma": "^3.2.1",
+    "@prisma/client": "^3.6.0",
+    "discord.js": "^13.3.1",
+    "node-emoji": "^1.11.0",
+    "prisma": "^3.6.0",
+    "ts-metadata-handler": "^1.1.0",
     "tsyringe": "^4.6.0",
     "uuid": "^8.3.2"
- },
+  },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
   },

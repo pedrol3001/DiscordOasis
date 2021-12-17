@@ -7,7 +7,7 @@ class PermissionsMicroHandler implements IMicroHandler {
     // permissions handler
     if (!msg.guild || !msg.command?.permissions) return
     for (const requiredPermission of msg.command.permissions) {
-      if (!msg.member?.hasPermission(requiredPermission)) {
+      if (!msg.member?.permissions.has(requiredPermission)) {
         const reply = `This command requires the permissions ${msg.command.permissions.join(', ')}`;
         throw new CommandError(reply, msg.channel);
       }

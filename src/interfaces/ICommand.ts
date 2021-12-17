@@ -11,7 +11,7 @@ export interface ICommand {
   usage?: string;
   roles?: Array<string>;
   group: ICommandGroups;
-  permissions?: Array<BitFieldResolvable<PermissionString>>;
+  permissions?: Array<BitFieldResolvable<PermissionString, bigint>>;
 
   plugin_id?: string;
 

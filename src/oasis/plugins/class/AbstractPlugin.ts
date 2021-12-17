@@ -1,4 +1,4 @@
-import { OasisError } from '../../../log/OasisError';
+import { OasisError } from '../../../logs/OasisError';
 import { ICommandHandler } from '../../../interfaces/ICommandHandler';
 import { AddCommandsFromFolder } from '../../commands/providers/AddCommands/implementations/AddCommandsFromFolder';
 import { RemoveCommandsFromPlugin } from '../../commands/providers/RemoveCommands/implementations/RemoveCommandsFromPlugin';
