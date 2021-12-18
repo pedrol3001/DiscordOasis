@@ -1,6 +1,6 @@
 import { AbstractPlugin } from './class/AbstractPlugin';
-import { ICommandHandler } from '../../interfaces/ICommandHandler';
-import { IPluginsHandler } from '../../interfaces/IPluginsHandler';
+import { ICommandHandler } from '../commands/ICommandHandler';
+import { IPluginsHandler } from './IPluginsHandler';
 import { GetPluginByNameController } from '../../repositories/plugin/useCases/GetPluginByName/GetPluginByNameController';
 import { CreatePluginController } from '../../repositories/plugin/useCases/CreatePlugin/CreatePluginController';
 

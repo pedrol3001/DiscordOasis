@@ -24,8 +24,7 @@
     "@types/uuid": "^8.3.3",
     "husky": "^7.0.4",
     "lint-staged": "^12.1.2",
-    "local-package-publisher": "^1.0.4",
-    "prettier": "2.5.1",
+    "prettier": "^2.5.1",
     "ts-node-dev": "^1.1.8",
     "typescript": "^4.5.4"
   },

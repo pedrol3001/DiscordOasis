@@ -4,7 +4,7 @@ import { ICommand } from '../../interfaces/ICommand';
 import { OasisError } from '../../logs/OasisError';
 
 import { CommandError } from './error/CommandError';
-import { ICommandHandler } from '../../interfaces/ICommandHandler';
+import { ICommandHandler } from './ICommandHandler';
 import { IAddCommands } from './providers/AddCommands/IAddCommands';
 import { IRemoveCommands } from './providers/RemoveCommands/IRemoveCommands';
 import { AddCommandsFromFolder } from './providers/AddCommands/implementations/AddCommandsFromFolder';
@@ -14,7 +14,7 @@ import { GroupsMicroHandler } from './handlers/implementations/GroupsMicroHandle
 import { PermissionsMicroHandler } from './handlers/implementations/PermissionsMicroHandler';
 import { RolesMicroHandler } from './handlers/implementations/RolesMicroHandler';
 import { CooldownsMicroHandler } from './handlers/implementations/CooldownsMicroHandler';
-import { IPluginsHandler } from '../../interfaces/IPluginsHandler';
+import { IPluginsHandler } from '../plugins/IPluginsHandler';
 import { PluginsMicroHandler } from './handlers/implementations/PluginsMicroHandler';
 
 export type IMicroHandlerExecutionMode = 'onBegin' | 'async' | 'onEnd';

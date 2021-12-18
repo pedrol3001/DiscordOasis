@@ -8,7 +8,7 @@ import PluginsHandler from './plugins';
 import { Client } from 'discord.js'
 import { OasisError } from '../logs/OasisError';
 import { IOasisOptions } from '../interfaces/IOasisOptions';
-import { IPluginsHandler } from '../interfaces/IPluginsHandler';
+import { IPluginsHandler } from './plugins/IPluginsHandler';
 import { Message } from 'discord.js';
 import { Guild } from 'discord.js';
 import { LoadGuildsController } from '../repositories/guild/useCases/LoadGuilds/LoadGuildsController';
@@ -62,7 +62,7 @@ class Oasis extends Client {
       new OasisLog('Ready!').log();
     });
 
-    this.on('message', async (msg: Message): Promise<void> => {
+    this.on('messageCreate', async (msg: Message): Promise<void> => {
       await commandHandler.handle(msg, pluginsHandler);
     });
 

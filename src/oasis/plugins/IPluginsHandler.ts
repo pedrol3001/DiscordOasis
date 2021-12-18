@@ -1,5 +1,5 @@
-import { AbstractPlugin } from '../oasis/plugins/class/AbstractPlugin';
-import { ICommandHandler } from './ICommandHandler';
+import { AbstractPlugin } from './class/AbstractPlugin';
+import { ICommandHandler } from '../commands/ICommandHandler';
 
 export interface IPluginsHandler {
   setup(command_handler: ICommandHandler): void;

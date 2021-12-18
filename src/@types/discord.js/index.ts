@@ -1,5 +1,5 @@
 import {ICommand} from '../../interfaces/ICommand'
-import {ICommandHandler} from '../../interfaces/ICommandHandler'
+import {ICommandHandler} from '../../oasis/commands/ICommandHandler'
 import { AbstractPlugin } from '../../oasis/plugins/class/AbstractPlugin'
 
 
