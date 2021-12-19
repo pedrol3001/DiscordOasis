@@ -1,6 +1,6 @@
 {
   "name": "discord-oasis",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "dist/cjs/index.js",
   "module": "./dist/esm5/index.js",
   "es2015": "./dist/esm2015/index.js",
@@ -21,7 +21,7 @@
     "build:es2022": "tsc -p ./typescript/tsconfig.esm2022.json",
     "build:types": "tsc -p ./typescript/tsconfig.types.json",
     "clean": "rimraf ./dist",
-    "dev:publish": "npm publish --registry http://localhost:4873/",
+    "publish:dev": "npm publish --registry http://localhost:4873/",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
