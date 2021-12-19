@@ -2,8 +2,8 @@
   "name": "discord-oasis",
   "version": "1.0.6",
   "main": "dist/cjs/index.js",
-  "module": "./dist/esm5/index.js",
-  "es2015": "./dist/esm2015/index.js",
+  "module": "./dist/esm6/index.js",
+  "es2022": "./dist/esm2022/index.js",
   "typings": "./dist/typings/index.d.ts",
   "files": [
     "/dist"
