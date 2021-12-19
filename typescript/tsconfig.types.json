@@ -2,7 +2,7 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "module": "es2022",
-    "target": "esnext",
+    "target": "es2021",
     "removeComments": false,
     "declaration": true,
     "declarationDir": "../dist/typings",
