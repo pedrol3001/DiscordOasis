@@ -2,8 +2,10 @@
 {
   "extends": "./typescript/tsconfig.base.json",
   "compilerOptions": {
-    "target": "es2021",
     "module": "commonjs",
-    "outDir": "./dist/cjs"
-  }
+    "target": "es2021",
+    "outDir": "./dist/cjs",
+    "moduleResolution": "node",
+    "lib": ["es2021"]
+  },
 }

@@ -1,12 +1,10 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "es6",
-    "module": "es2022",
-    "outDir": "../dist/esm6",
-    "lib": [
-      "es6"
-    ],
-    "downlevelIteration": true
-  }
+    "module": "es6",
+    "target": "es2021",
+    "lib": ["es2021"],
+    "outDir": "../dist/es6",
+    "moduleResolution": "node"
+  },  
 }
