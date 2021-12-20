@@ -41,10 +41,9 @@ class CommandHandler implements ICommandHandler {
       new GroupsMicroHandler(),
       new PermissionsMicroHandler(),
       new RolesMicroHandler(),
-      new CooldownsMicroHandler(),
     ];
 
-    this._on_begin_micro_handlers = [new PluginsMicroHandler()];
+    this._on_begin_micro_handlers = [new PluginsMicroHandler(), new CooldownsMicroHandler()];
     this._on_end_micro_handlers = [];
   }
 
@@ -62,9 +61,9 @@ class CommandHandler implements ICommandHandler {
     }
   }
 
-  public edit(ConfType: new () => IAddCommands | IRemoveCommands, ...args: string[]) {
+  public async edit(ConfType: new () => IAddCommands | IRemoveCommands, ...args: string[]) {
     const provider = new ConfType();
-    provider.handle(this._commands, ...args);
+    await provider.handle(this._commands, ...args);
   }
 
   public async handle(msg: Message, pluginsHandler: IPluginsHandler): Promise<void> {

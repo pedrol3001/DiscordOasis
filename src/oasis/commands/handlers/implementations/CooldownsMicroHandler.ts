@@ -3,24 +3,29 @@ import { CommandError } from '../../../commands/error/CommandError';
 import { IMicroHandler } from '../IMicroHandler';
 
 class CooldownsMicroHandler implements IMicroHandler {
-  private cooldowns: Collection<string | undefined, Collection<string, number>>;
+  private cooldowns: Collection<string, Collection<string, number>>;
 
   constructor() {
-    this.cooldowns = new Collection<string | undefined, Collection<string, number>>();
+    this.cooldowns = new Collection<string, Collection<string, number>>();
   }
 
   async handle(msg: Message): Promise<void> {
     // cooldowns handler
-    if (!this.cooldowns.has(msg.command?.name)) {
-      this.cooldowns.set(msg.command?.name, new Collection());
+
+    if(!msg.command) return;
+
+    if (!this.cooldowns.has(msg.command.name)) {
+      this.cooldowns.set(msg.command.name, new Collection());
     }
 
     const now = Date.now();
-    const timestamps = this.cooldowns.get(msg.command?.name);
-    const cooldownAmount = (msg.command?.cooldown || 1) * 1000;
+    const timestamps = this.cooldowns.get(msg.command.name);
+    const cooldownAmount = (msg.command.cooldown || 1) * 1000;
 
-    if (timestamps?.has(msg.author.id)) {
-      const expirationTime = timestamps.get(msg.author.id) || 0 + cooldownAmount;
+    const timestampValue = timestamps?.get(msg.author.id);
+
+    if (timestampValue !== undefined) {
+      const expirationTime = timestampValue + cooldownAmount;
 
       if (now < expirationTime) {
         const timeLeft = (expirationTime - now) / 1000;
