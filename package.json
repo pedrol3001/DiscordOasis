@@ -22,8 +22,8 @@
     "publish:dev": "npm publish --registry http://localhost:4873/",
     "prepublishOnly": "npm run build",
     
-    "lint": "eslint src/**",
-    "format": "eslint src/** --fix",
+    "lint": "eslint src/**/*.ts",
+    "format": "eslint src/**/*.ts --fix",
     "prepare": "husky install"
   },
   "devDependencies": {
@@ -49,7 +49,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn lint"
+      "pre-commit": "npm format"
     }
   },
   "description": "Discordjs bot framework",
