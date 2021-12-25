@@ -2,9 +2,6 @@ export type ConditionalArray<U, T extends string | Array<string>> = T extends st
 
 export type constructor<T> = new (...args: string[]) => T;
 
-export type GenericObject = { [key: string]: any };
+export type GenericObject = { [key: string]: unknown };
 
 export type ThenArg<T> = T extends PromiseLike<infer U> ? U : T;
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-export type TypeOfClassMethod<T, M extends keyof T> = T[M] extends Function ? T[M] : never;

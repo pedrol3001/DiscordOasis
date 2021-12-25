@@ -4,6 +4,7 @@ import { IPluginsRepository } from '../../../plugin/prisma/IPluginsRepository';
 
 @injectable()
 class GetPluginByNameUseCase {
+  // eslint-disable-next-line no-useless-constructor
   constructor(
     @inject('PluginsRepository')
     private pluginRepository: IPluginsRepository,

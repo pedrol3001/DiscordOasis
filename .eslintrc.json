@@ -20,15 +20,13 @@
     ],
     "rules": {
         "prettier/prettier": "error",
-        "import/extensions": "off",
         "class-methods-use-this": "off",
+        "import/extensions": "off",
+        "import/prefer-default-export": "off",
         "no-param-reassign": "off",
-        "no-underscore-dangle": "off",
         "import/no-unresolved": "off",
+        "no-underscore-dangle": "off",
         "no-useless-constructor": "off",
-        " no-underscore-dangle": "off",
-        "no-restricted-syntax": "off",
-        "no-promise-executor-return": "off",
-        "import/prefer-default-export": "off"
+        "no-restricted-syntax": "off"
     }
 }
