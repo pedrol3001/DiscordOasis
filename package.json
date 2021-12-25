@@ -21,7 +21,8 @@
     "clean": "rimraf ./dist",
     "publish:dev": "npm publish --registry http://localhost:4873/",
     "prepublishOnly": "npm run build",
-    "format": "prettier --write \"**/*.{js,ts,json,md}\""
+    "format": "prettier --write \"**/*.{js,ts,json,md}\"",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@types/node": "^17.0.0",
@@ -51,8 +52,8 @@
     }
   },
   "lint-staged": {
-    "**/*.ts": [
-      "eslint 'src/**' --fix"
+    "*": [
+      "eslint --fix"
     ]
   },
   "description": "Discordjs bot framework",

@@ -1,5 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npm run eslint 'src/**' --fix
-npm run lint-staged 
+npx lint-staged 
