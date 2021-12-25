@@ -5,10 +5,5 @@ import { IGuildsRepository } from '../repositories/guild/prisma/IGuildsRepositor
 import { IPluginsRepository } from '../repositories/plugin/prisma/IPluginsRepository';
 import { PluginsRepository } from '../repositories/plugin/prisma/PluginsRepository';
 
-
 container.registerSingleton<IGuildsRepository>('GuildsRepository', GuildsRepository);
 container.registerSingleton<IPluginsRepository>('PluginsRepository', PluginsRepository);
-
-
-
-

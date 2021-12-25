@@ -1,16 +1,14 @@
 import '../repositories';
 
+import { Client, Message, Guild } from 'discord.js';
 import { prisma } from '../database';
 
 import CommandHandler from './commands';
 import PluginsHandler from './plugins';
 
-import { Client } from 'discord.js'
 import { OasisError } from '../logs/OasisError';
 import { IOasisOptions } from '../interfaces/IOasisOptions';
 import { IPluginsHandler } from './plugins/IPluginsHandler';
-import { Message } from 'discord.js';
-import { Guild } from 'discord.js';
 import { LoadGuildsController } from '../repositories/guild/useCases/LoadGuilds/LoadGuildsController';
 import { CreateGuildController } from '../repositories/guild/useCases/CreateGuild/CreateGuildController';
 import { OasisLog } from '../logs/OasisLog';
@@ -19,25 +17,24 @@ class Oasis extends Client {
   readonly plugins_handler: IPluginsHandler;
 
   constructor(options: IOasisOptions) {
-
     super(options);
-    const { plugins, commands_folder, global_prefix} = options;
+    const { plugins, commandsFolder, globalPrefix } = options;
 
-    this.command_handler = new CommandHandler(commands_folder, global_prefix);
+    this.command_handler = new CommandHandler(commandsFolder, globalPrefix);
     this.plugins_handler = new PluginsHandler(plugins || []);
 
     this.setDefaultCallbacks();
   }
 
-  private async setupGuilds(){
+  private async setupGuilds() {
     const guilds = this.guilds.cache;
 
     await Promise.all(
       guilds.map(async (guild) => {
-        try{
+        try {
           await CreateGuildController.handle({ id: guild.id, prefix: null });
           new OasisLog(`Created guild ${guild.name}. ${guild.id}`).log();
-        }catch(err){
+        } catch (err) {
           new OasisLog(`Guild ${guild.id} already exists. Skipping.`).warn();
         }
       }),
@@ -52,11 +49,10 @@ class Oasis extends Client {
     const commandHandler = this.command_handler;
 
     this.once('ready', async () => {
-
       await this.setupGuilds();
       await LoadGuildsController.handle(this);
       pluginsHandler.setup(this.command_handler);
-      
+
       this.user?.setActivity('Online!');
       new OasisLog('Ready!').log();
     });

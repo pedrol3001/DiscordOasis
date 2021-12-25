@@ -1,4 +1,4 @@
-import {Message, BitFieldResolvable, PermissionString } from 'discord.js';
+import { Message, BitFieldResolvable, PermissionString } from 'discord.js';
 
 export type ICommandGroups = 'guildOnly' | 'global' | 'dmOnly';
 

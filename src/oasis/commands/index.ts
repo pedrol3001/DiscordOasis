@@ -22,20 +22,22 @@ export type IMicroHandlerExecutionMode = 'onBegin' | 'async' | 'onEnd';
 class CommandHandler implements ICommandHandler {
   private _commands: Collection<string, ICommand> = new Collection<string, ICommand>();
 
-  private readonly _global_prefix: string;
+  private readonly _globalPrefix: string;
 
   private _on_begin_micro_handlers: IMicroHandler[];
+
   private _micro_handlers: IMicroHandler[];
+
   private _on_end_micro_handlers: IMicroHandler[];
 
   public get commands(): Array<ICommand> {
     return Array.from(this._commands.values());
   }
 
-  public constructor(commands_folder: string, global_prefix: string) {
-    this.edit(AddCommandsFromFolder, commands_folder);
+  public constructor(commandsFolder: string, globalPrefix: string) {
+    this.edit(AddCommandsFromFolder, commandsFolder);
 
-    this._global_prefix = global_prefix;
+    this._globalPrefix = globalPrefix;
     this._micro_handlers = [
       new ArgsMicroHandler(),
       new GroupsMicroHandler(),
@@ -67,25 +69,24 @@ class CommandHandler implements ICommandHandler {
   }
 
   public async handle(msg: Message, pluginsHandler: IPluginsHandler): Promise<void> {
-   
     this.setPrefix(msg);
     if (!msg.prefix) return;
 
     this.setArgs(msg);
-    
+
     this.setCommand(msg);
     if (!msg.command) return;
 
     this.setManager(msg, pluginsHandler);
 
     try {
-      for (let handler of this._on_begin_micro_handlers) {
+      for (const handler of this._on_begin_micro_handlers) {
         await handler.handle(msg);
       }
 
       await Promise.all(this._micro_handlers.map(async (handler) => handler.handle(msg)));
 
-      for (let handler of this._on_end_micro_handlers) {
+      for (const handler of this._on_end_micro_handlers) {
         await handler.handle(msg);
       }
 
@@ -102,8 +103,8 @@ class CommandHandler implements ICommandHandler {
   private setPrefix(msg: Message) {
     if (msg.author.bot) return;
 
-    if (this._global_prefix && msg.content.startsWith(this._global_prefix)) {
-      msg.prefix = this._global_prefix;
+    if (this._globalPrefix && msg.content.startsWith(this._globalPrefix)) {
+      msg.prefix = this._globalPrefix;
     }
 
     if (msg.guild?.prefix && msg.content.startsWith(msg.guild.prefix)) {
@@ -126,7 +127,8 @@ class CommandHandler implements ICommandHandler {
       msg.command = commandByName || commandByAliases || null;
     }
   }
-  private setManager(msg: Message, pluginsHandler: IPluginsHandler){
+
+  private setManager(msg: Message, pluginsHandler: IPluginsHandler) {
     const plugin_id = msg.command?.plugin_id;
     msg.manager = plugin_id ? pluginsHandler.plugins.get(plugin_id) || null : null;
   }

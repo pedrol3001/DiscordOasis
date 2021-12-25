@@ -4,6 +4,7 @@ class OasisLog {
   constructor(public msg: string, public metadata?: Record<string, unknown>) {
     this.message = msg;
   }
+
   public log() {
     const noMetadata = !this.metadata || Object.entries(this.metadata).length === 0;
     if (noMetadata) {
@@ -12,6 +13,7 @@ class OasisLog {
       console.log(this.message, this.metadata);
     }
   }
+
   public warn() {
     const noMetadata = !this.metadata || Object.entries(this.metadata).length === 0;
     if (noMetadata) {

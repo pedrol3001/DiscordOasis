@@ -20,9 +20,9 @@ class AddCommandsFromFolder implements IAddCommands {
 
         command.plugin_id = plugin || undefined;
 
-        const already_exists = collection.get(command.name);
+        const alreadyExists = collection.get(command.name);
 
-        if (already_exists) {
+        if (alreadyExists) {
           throw new OasisError(`Error adding command ${command.name} from folder, this commands already exists.`);
         }
 
