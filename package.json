@@ -51,9 +51,8 @@
     }
   },
   "lint-staged": {
-    "**/*": [
-      "eslint --fix",
-      "git add"
+    "**/*.ts": [
+      "eslint 'src/**' --fix"
     ]
   },
   "description": "Discordjs bot framework",
