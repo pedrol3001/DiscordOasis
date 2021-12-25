@@ -11,7 +11,7 @@
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "ecmaVersion": 13,
+        "ecmaVersion": 12,
         "sourceType": "module"
     },
     "plugins": [
@@ -20,8 +20,12 @@
     ],
     "rules": {
         "prettier/prettier": "error",
-        "import/no-unresolved": {
-            "commonjs": true
-        }
+        "import/no-unresolved": [
+            "error",
+            {
+                "commonjs": true,
+                "amd": true
+            }
+        ]
     }
 }

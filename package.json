@@ -21,7 +21,9 @@
     "clean": "rimraf ./dist",
     "publish:dev": "npm publish --registry http://localhost:4873/",
     "prepublishOnly": "npm run build",
-    "format": "prettier --write \"**/*.{js,ts,json,md}\"",
+    
+    "lint": "eslint src/**/*.ts",
+    "format": "eslint src/**/*.ts --fix",
     "prepare": "husky install"
   },
   "devDependencies": {
@@ -34,7 +36,6 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^7.0.4",
-    "lint-staged": "^12.1.4",
     "prettier": "^2.5.1",
     "ts-node-dev": "^1.1.8",
     "typescript": "^4.5.4"
@@ -48,13 +49,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "yarn lint"
     }
-  },
-  "lint-staged": {
-    "*": [
-      "eslint --fix"
-    ]
   },
   "description": "Discordjs bot framework",
   "repository": {

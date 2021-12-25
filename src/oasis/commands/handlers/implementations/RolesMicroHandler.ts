@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { CommandError } from '../../..//commands/error/CommandError';
+import { CommandError } from '../../../commands/error/CommandError';
 import { IMicroHandler } from '../IMicroHandler';
 
 class RolesMicroHandler implements IMicroHandler {
@@ -7,10 +7,10 @@ class RolesMicroHandler implements IMicroHandler {
     // roles handler
     if (!msg.guild || !msg.command?.roles) return;
     const roles = msg.command.roles.filter((required_role: string) => {
-      return msg.guild?.roles.cache.some((role) => role.name === required_role) &&
+      return !!(
+        msg.guild?.roles.cache.some((role) => role.name === required_role) &&
         msg.member?.roles.cache.some((role) => role.name === required_role)
-        ? true
-        : false;
+      );
     });
 
     if (roles.length === 0) {
