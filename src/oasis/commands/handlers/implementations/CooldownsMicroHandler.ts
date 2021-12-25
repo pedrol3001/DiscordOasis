@@ -12,7 +12,7 @@ class CooldownsMicroHandler implements IMicroHandler {
   async handle(msg: Message): Promise<void> {
     // cooldowns handler
 
-    if(!msg.command) return;
+    if (!msg.command) return;
 
     if (!this.cooldowns.has(msg.command.name)) {
       this.cooldowns.set(msg.command.name, new Collection());

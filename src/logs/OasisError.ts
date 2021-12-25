@@ -1,8 +1,7 @@
 class OasisError extends Error {
-
   constructor(msg: string, cause?: Error | unknown, public metadata?: Record<string, unknown>) {
     super(msg);
-    
+
     if (cause) {
       const causeMessage = cause instanceof Error ? cause.message : `Invalid error object: ${JSON.stringify(cause)}`;
       this.message = `${this.message}: ${causeMessage}`;
@@ -24,5 +23,4 @@ class OasisError extends Error {
     }
   }
 }
-
-export {OasisError};
+export { OasisError };
