@@ -1,6 +1,6 @@
 import { Guild } from '@prisma/client';
-import { IGuildsRepository } from '../../prisma/IGuildsRepository';
 import { inject, injectable } from 'tsyringe';
+import { IGuildsRepository } from '../../prisma/IGuildsRepository';
 
 @injectable()
 class CreateGuildUseCase {
@@ -10,7 +10,7 @@ class CreateGuildUseCase {
   ) {}
 
   public async execute(data: Guild): Promise<Guild> {
-    return await this.guildRepository.create(data);
+    return this.guildRepository.create(data);
   }
 }
 

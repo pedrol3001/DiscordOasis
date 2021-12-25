@@ -1,5 +1,5 @@
-import { IGuildsRepository } from '../../prisma/IGuildsRepository';
 import { inject, injectable } from 'tsyringe';
+import { IGuildsRepository } from '../../prisma/IGuildsRepository';
 
 interface IPrefixChange {
   id: string;
@@ -15,7 +15,7 @@ class SetGuildPrefixUseCase {
 
   public async execute({ id, prefix }: IPrefixChange): Promise<void> {
     const guild = await this.guildRepository.findById(id);
-    await this.guildRepository.update({...guild, prefix});
+    await this.guildRepository.update({ ...guild, prefix });
   }
 }
 

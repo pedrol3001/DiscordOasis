@@ -5,7 +5,7 @@ import { CreateGuildUseCase } from './CreateGuildUseCase';
 const CreateGuildController = {
   async handle(data: Guild): Promise<Guild> {
     const saveGuildUseCase = container.resolve(CreateGuildUseCase);
-    return await saveGuildUseCase.execute(data);
+    return saveGuildUseCase.execute(data);
   },
 };
 

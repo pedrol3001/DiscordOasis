@@ -13,9 +13,10 @@ class CreateGuildUseCase {
     @inject('PluginsRepository')
     private pluginRepository: IPluginsRepository,
   ) {}
+
   public async execute(data: NewPlugin): Promise<Plugin> {
     if (!data.id) data.id = uuidv4();
-    return await this.pluginRepository.create(data as Plugin);
+    return this.pluginRepository.create(data as Plugin);
   }
 }
 

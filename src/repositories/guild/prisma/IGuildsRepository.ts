@@ -1,4 +1,4 @@
-import { Guild, Plugin } from '@prisma/client'
+import { Guild, Plugin } from '@prisma/client';
 import { ConditionalArray } from '../../../utils/types';
 
 interface includeGuild {
@@ -6,7 +6,10 @@ interface includeGuild {
 }
 interface IGuildsRepository {
   create: (data: Guild) => Promise<Guild>;
-  findById: <T extends string | Array<string>> (id: T, includes?: includeGuild) => Promise<ConditionalArray<Guild & { plugins: Plugin[]; }, T>>;
+  findById: <T extends string | Array<string>>(
+    id: T,
+    includes?: includeGuild,
+  ) => Promise<ConditionalArray<Guild & { plugins: Plugin[] }, T>>;
   update: (data: Guild) => Promise<void>;
 }
 

@@ -1,6 +1,6 @@
 import { Plugin } from '@prisma/client';
-import { IPluginsRepository } from '../../../plugin/prisma/IPluginsRepository';
 import { inject, injectable } from 'tsyringe';
+import { IPluginsRepository } from '../../../plugin/prisma/IPluginsRepository';
 
 @injectable()
 class GetPluginByNameUseCase {
@@ -8,8 +8,9 @@ class GetPluginByNameUseCase {
     @inject('PluginsRepository')
     private pluginRepository: IPluginsRepository,
   ) {}
+
   public async execute(name: string): Promise<Plugin | null> {
-    return await this.pluginRepository.findByName(name);
+    return this.pluginRepository.findByName(name);
   }
 }
 

@@ -6,11 +6,11 @@ import { CreatePluginController } from '../../repositories/plugin/useCases/Creat
 
 class PluginsHandler implements IPluginsHandler {
   private _plugins: Map<string, AbstractPlugin>;
-  
-  constructor(plugins_managers: AbstractPlugin[]) {
+
+  constructor(pluginsManagers: AbstractPlugin[]) {
     this._plugins = new Map();
 
-    plugins_managers.forEach((plugin) => {
+    pluginsManagers.forEach((plugin) => {
       this._plugins.set(plugin.name, plugin);
     });
   }
@@ -19,13 +19,13 @@ class PluginsHandler implements IPluginsHandler {
     return this._plugins;
   }
 
-  setup(command_handler: ICommandHandler) {
+  setup(commandHandler: ICommandHandler) {
     this._plugins.forEach(async (plugin: AbstractPlugin, pluginName: string) => {
       if (!plugin) return;
       const oldPlugin = await GetPluginByNameController.handle(pluginName);
-      const pluginDb = oldPlugin || await CreatePluginController.handle({ name: pluginName });
+      const pluginDb = oldPlugin || (await CreatePluginController.handle({ name: pluginName }));
       await plugin.setup(pluginDb.id);
-      await plugin.set(command_handler);
+      await plugin.set(commandHandler);
       this._plugins.set(pluginDb.id, plugin);
       this._plugins.delete(pluginName);
     });

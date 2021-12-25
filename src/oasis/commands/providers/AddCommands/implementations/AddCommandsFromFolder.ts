@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable global-require */
+/* eslint-disable import/no-dynamic-require */
+
 import { readdirSync } from 'fs';
 import { Collection } from 'discord.js';
 import { ICommand } from '../../../../../interfaces/ICommand';
@@ -18,7 +22,7 @@ class AddCommandsFromFolder implements IAddCommands {
 
         const command: ICommand = require(`${folderPath}/${file}`).default;
 
-        command.plugin_id = plugin || undefined;
+        command.pluginId = plugin || undefined;
 
         const alreadyExists = collection.get(command.name);
 

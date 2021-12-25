@@ -6,10 +6,10 @@ import { IMicroHandler } from '../IMicroHandler';
 class PluginsMicroHandler implements IMicroHandler {
   async handle(msg: Message): Promise<void> {
     // plugins handler
-    if (!msg.guild || !msg.command?.plugin_id) return;
-    const { plugin_id } = msg.command;
-    const hasPlugin = await CheckGuildsPluginController.handle([msg.guild?.id], plugin_id);
-    
+    if (!msg.guild || !msg.command?.pluginId) return;
+    const { pluginId } = msg.command;
+    const hasPlugin = await CheckGuildsPluginController.handle([msg.guild?.id], pluginId);
+
     if (!hasPlugin) {
       const reply = `Your guild does not have this plugin enabled`;
       throw new CommandError(reply, msg.channel);

@@ -24,11 +24,11 @@ class CommandHandler implements ICommandHandler {
 
   private readonly _globalPrefix: string;
 
-  private _on_begin_micro_handlers: IMicroHandler[];
+  private _on_begin_microHandlers: IMicroHandler[];
 
-  private _micro_handlers: IMicroHandler[];
+  private _microHandlers: IMicroHandler[];
 
-  private _on_end_micro_handlers: IMicroHandler[];
+  private _on_end_microHandlers: IMicroHandler[];
 
   public get commands(): Array<ICommand> {
     return Array.from(this._commands.values());
@@ -38,28 +38,30 @@ class CommandHandler implements ICommandHandler {
     this.edit(AddCommandsFromFolder, commandsFolder);
 
     this._globalPrefix = globalPrefix;
-    this._micro_handlers = [
+    this._microHandlers = [
       new ArgsMicroHandler(),
       new GroupsMicroHandler(),
       new PermissionsMicroHandler(),
       new RolesMicroHandler(),
     ];
 
-    this._on_begin_micro_handlers = [new PluginsMicroHandler(), new CooldownsMicroHandler()];
-    this._on_end_micro_handlers = [];
+    this._on_begin_microHandlers = [new PluginsMicroHandler(), new CooldownsMicroHandler()];
+    this._on_end_microHandlers = [];
   }
 
   public addMicroHandler(handler: IMicroHandler, onBegin: IMicroHandlerExecutionMode = 'async') {
     switch (onBegin) {
       case 'onBegin':
-        this._on_begin_micro_handlers.push(handler);
+        this._on_begin_microHandlers.push(handler);
         break;
       case 'async':
-        this._micro_handlers.push(handler);
+        this._microHandlers.push(handler);
         break;
       case 'onEnd':
-        this._on_end_micro_handlers.push(handler);
+        this._on_end_microHandlers.push(handler);
         break;
+      default:
+        throw new OasisError('Invalid micro handler execution mode');
     }
   }
 
@@ -80,19 +82,24 @@ class CommandHandler implements ICommandHandler {
     this.setManager(msg, pluginsHandler);
 
     try {
-      for (const handler of this._on_begin_micro_handlers) {
+      for (const handler of this._on_begin_microHandlers) {
+        // eslint-disable-next-line no-await-in-loop
         await handler.handle(msg);
       }
 
-      await Promise.all(this._micro_handlers.map(async (handler) => handler.handle(msg)));
+      await Promise.all(this._microHandlers.map(async (handler) => handler.handle(msg)));
 
-      for (const handler of this._on_end_micro_handlers) {
+      for (const handler of this._on_end_microHandlers) {
+        // eslint-disable-next-line no-await-in-loop
         await handler.handle(msg);
       }
 
       await msg.command.execute(msg);
     } catch (err) {
-      if (err instanceof CommandError) return await err.send();
+      if (err instanceof CommandError) {
+        err.send();
+        return;
+      }
 
       throw new OasisError('Error executing command', err, {
         message: msg,
@@ -118,19 +125,19 @@ class CommandHandler implements ICommandHandler {
   }
 
   private setCommand(msg: Message) {
-    const command_msg = new Array<string>();
+    const commandMsg = new Array<string>();
     while (!msg.command && msg.args.length > 0) {
-      command_msg.push(msg.args.shift()?.toLowerCase() || '');
-      const commandByName = this._commands.get(command_msg.join(' '));
-      const commandByAliases = this._commands.find((cmd) => cmd.aliases?.includes(command_msg.join(' ')));
+      commandMsg.push(msg.args.shift()?.toLowerCase() || '');
+      const commandByName = this._commands.get(commandMsg.join(' '));
+      const commandByAliases = this._commands.find((cmd) => cmd.aliases?.includes(commandMsg.join(' ')));
 
       msg.command = commandByName || commandByAliases || null;
     }
   }
 
   private setManager(msg: Message, pluginsHandler: IPluginsHandler) {
-    const plugin_id = msg.command?.plugin_id;
-    msg.manager = plugin_id ? pluginsHandler.plugins.get(plugin_id) || null : null;
+    const pluginId = msg.command?.pluginId;
+    msg.manager = pluginId ? pluginsHandler.plugins.get(pluginId) || null : null;
   }
 }
 export default CommandHandler;

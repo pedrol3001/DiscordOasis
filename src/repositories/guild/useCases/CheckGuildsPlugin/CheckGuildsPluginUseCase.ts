@@ -9,17 +9,17 @@ class CheckGuildsPluginUseCase {
     private guildRepository: IGuildsRepository,
   ) {}
 
-  async execute(guild_ids: string[], plugin_id: string): Promise<boolean> {
-    const guilds = await this.guildRepository.findById(guild_ids, { plugins: true });
-    const pluginEnabledGuilds = guilds.some((guild) => this.hasPlugin(guild, plugin_id));
+  async execute(guildIds: string[], pluginId: string): Promise<boolean> {
+    const guilds = await this.guildRepository.findById(guildIds, { plugins: true });
+    const pluginEnabledGuilds = guilds.some((guild) => this.hasPlugin(guild, pluginId));
 
     if (pluginEnabledGuilds) return true;
     return false;
   }
 
-  private hasPlugin(guild: Guild & { plugins: Plugin[]; }, plugin_id: string) {
+  private hasPlugin(guild: Guild & { plugins: Plugin[] }, pluginId: string) {
     return guild.plugins.some((plugin: Plugin) => {
-      return plugin.id === plugin_id;
+      return plugin.id === pluginId;
     });
   }
 }

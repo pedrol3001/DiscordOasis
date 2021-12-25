@@ -13,7 +13,7 @@ export interface ICommand {
   group: ICommandGroups;
   permissions?: Array<BitFieldResolvable<PermissionString, bigint>>;
 
-  plugin_id?: string;
+  pluginId?: string;
 
   execute(msg: Message): Promise<void>;
 }

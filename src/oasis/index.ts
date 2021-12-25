@@ -14,14 +14,14 @@ import { CreateGuildController } from '../repositories/guild/useCases/CreateGuil
 import { OasisLog } from '../logs/OasisLog';
 
 class Oasis extends Client {
-  readonly plugins_handler: IPluginsHandler;
+  readonly pluginsHandler: IPluginsHandler;
 
   constructor(options: IOasisOptions) {
     super(options);
     const { plugins, commandsFolder, globalPrefix } = options;
 
-    this.command_handler = new CommandHandler(commandsFolder, globalPrefix);
-    this.plugins_handler = new PluginsHandler(plugins || []);
+    this.commandHandler = new CommandHandler(commandsFolder, globalPrefix);
+    this.pluginsHandler = new PluginsHandler(plugins || []);
 
     this.setDefaultCallbacks();
   }
@@ -45,13 +45,13 @@ class Oasis extends Client {
   }
 
   private setDefaultCallbacks(): void {
-    const pluginsHandler = this.plugins_handler;
-    const commandHandler = this.command_handler;
+    const { pluginsHandler } = this;
+    const { commandHandler } = this;
 
     this.once('ready', async () => {
       await this.setupGuilds();
       await LoadGuildsController.handle(this);
-      pluginsHandler.setup(this.command_handler);
+      pluginsHandler.setup(this.commandHandler);
 
       this.user?.setActivity('Online!');
       new OasisLog('Ready!').log();

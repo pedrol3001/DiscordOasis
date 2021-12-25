@@ -6,10 +6,10 @@ class RolesMicroHandler implements IMicroHandler {
   async handle(msg: Message): Promise<void> {
     // roles handler
     if (!msg.guild || !msg.command?.roles) return;
-    const roles = msg.command.roles.filter((required_role: string) => {
+    const roles = msg.command.roles.filter((requiredRole: string) => {
       return !!(
-        msg.guild?.roles.cache.some((role) => role.name === required_role) &&
-        msg.member?.roles.cache.some((role) => role.name === required_role)
+        msg.guild?.roles.cache.some((role) => role.name === requiredRole) &&
+        msg.member?.roles.cache.some((role) => role.name === requiredRole)
       );
     });
 
