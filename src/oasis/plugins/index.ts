@@ -26,6 +26,7 @@ class PluginsHandler implements IPluginsHandler {
       const pluginDb = oldPlugin || (await CreatePluginController.handle({ name: pluginName }));
       await plugin.setup(pluginDb.id);
       await plugin.set(commandHandler);
+
       this._plugins.set(pluginDb.id, plugin);
       this._plugins.delete(pluginName);
     });

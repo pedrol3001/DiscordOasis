@@ -1,4 +1,4 @@
-import { Collection, CommandInteraction, Interaction, Message } from 'discord.js';
+import { ClientApplication, Collection, CommandInteraction, Interaction, Message } from 'discord.js';
 
 import { get } from 'lodash';
 import { ICommand } from '../../interfaces/ICommand';
@@ -25,19 +25,22 @@ class CommandHandler implements ICommandHandler {
 
   private readonly globalPrefix: string;
 
+  private readonly commandsFolder: string;
+
   private onBeginMicroHandlers: IMicroHandler[];
 
   private microHandlers: IMicroHandler[];
 
   private onEndMicroHandlers: IMicroHandler[];
 
+  private application?: ClientApplication;
+
   public get commands(): Array<ICommand> {
     return Array.from(this._commands.values());
   }
 
   public constructor(commandsFolder: string, globalPrefix: string) {
-    this.edit(AddCommandsFromFolder, commandsFolder);
-
+    this.commandsFolder = commandsFolder;
     this.globalPrefix = globalPrefix;
     this.microHandlers = [
       new ArgsMicroHandler(),
@@ -48,6 +51,11 @@ class CommandHandler implements ICommandHandler {
 
     this.onBeginMicroHandlers = [new PluginsMicroHandler(), new CooldownsMicroHandler()];
     this.onEndMicroHandlers = [];
+  }
+
+  public setup(application: ClientApplication) {
+    this.application = application;
+    this.edit(AddCommandsFromFolder, this.commandsFolder, this.application.id);
   }
 
   public addMicroHandler(handler: IMicroHandler, onBegin: IMicroHandlerExecutionMode = 'async') {

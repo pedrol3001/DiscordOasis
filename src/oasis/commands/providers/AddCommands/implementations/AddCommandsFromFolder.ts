@@ -4,18 +4,21 @@
 
 import { readdirSync } from 'fs';
 import { Collection } from 'discord.js';
+import { parseCommand, registerCommands } from '../../../../../services/slash';
 import { ICommand } from '../../../../../interfaces/ICommand';
 import { OasisError } from '../../../../../error/OasisError';
 import { IAddCommands } from '../IAddCommands';
 
 class AddCommandsFromFolder implements IAddCommands {
   public handle(collection: Collection<string, ICommand>, ...args: string[]): void {
-    const [folderPath, pluginId] = args;
+    const [folderPath, applicationId, pluginId] = args;
 
     try {
       const commandFiles = readdirSync(folderPath).filter((file) =>
         file.endsWith(process.env.NODE_ENV === 'production' ? '.js' : '.ts'),
       );
+
+      const slashCommandsJSON = [];
 
       for (const file of commandFiles) {
         delete require.cache[require.resolve(`${folderPath}/${file}`)];
@@ -31,7 +34,10 @@ class AddCommandsFromFolder implements IAddCommands {
         }
 
         collection.set(command.name, command); // Add command to collection
+        slashCommandsJSON.push(parseCommand(command)); // Add command to slash commands json
       }
+
+      registerCommands(applicationId, slashCommandsJSON); // Register commands in slash commands json
     } catch (err) {
       throw new OasisError('Error adding commands from folder', {
         folder: folderPath[0],

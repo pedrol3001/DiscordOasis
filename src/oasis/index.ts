@@ -2,6 +2,7 @@ import '../repositories';
 
 import { Client, Message, Guild, Interaction } from 'discord.js';
 import { transport as TransportStream } from 'winston';
+import { setDiscordRest } from '../services/rest';
 import { prisma } from '../database';
 
 import logger from '../services/logger';
@@ -13,8 +14,11 @@ import { IOasisOptions } from '../interfaces/IOasisOptions';
 import { IPluginsHandler } from './plugins/IPluginsHandler';
 import { LoadGuildsController } from '../repositories/guild/useCases/LoadGuilds/LoadGuildsController';
 import { CreateGuildController } from '../repositories/guild/useCases/CreateGuild/CreateGuildController';
+import { ICommandHandler } from './commands/ICommandHandler';
 
 class Oasis extends Client {
+  readonly commandHandler: ICommandHandler;
+
   readonly pluginsHandler: IPluginsHandler;
 
   constructor(options: IOasisOptions) {
@@ -56,11 +60,16 @@ class Oasis extends Client {
     const { pluginsHandler, commandHandler } = this;
 
     this.once('ready', async () => {
+      if (!this.user || !this.application) {
+        throw new OasisError('Client has not initialized properly');
+      }
+
       await this.setupGuilds();
       await LoadGuildsController.handle(this);
+      commandHandler.setup(this.application);
       pluginsHandler.setup(this.commandHandler);
 
-      this.user?.setActivity('Online!');
+      this.user.setActivity('Online!');
       logger.verbose('Ready!');
     });
 
@@ -88,6 +97,7 @@ class Oasis extends Client {
   }
 
   public async listen(token: string): Promise<void> {
+    setDiscordRest(token);
     await prisma.$connect;
     this.login(token);
   }
