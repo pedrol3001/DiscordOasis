@@ -77,7 +77,6 @@ class CommandHandler implements ICommandHandler {
     this.setManager(interaction, pluginsHandler);
 
     await this.executeInteraction(interaction);
-    console.log(interaction, pluginsHandler);
   }
 
   public async handleMessage(message: Message, pluginsHandler: IPluginsHandler) {
