@@ -74,6 +74,8 @@ class CommandHandler implements ICommandHandler {
   public async handleInteraction(interaction: Interaction, pluginsHandler: IPluginsHandler) {
     if (!interaction.isCommand()) return;
 
+    this.setCommand(interaction);
+
     this.setManager(interaction, pluginsHandler);
 
     await this.executeHandler(interaction);
