@@ -1,7 +1,7 @@
 import { Collection, Message } from 'discord.js';
 
 import { ICommand } from '../../interfaces/ICommand';
-import { OasisError } from '../../logs/OasisError';
+import { OasisError } from '../../error/OasisError';
 
 import { CommandError } from './error/CommandError';
 import { ICommandHandler } from './ICommandHandler';
@@ -101,7 +101,7 @@ class CommandHandler implements ICommandHandler {
         return;
       }
 
-      throw new OasisError('Error executing command', err, {
+      throw new OasisError('Error executing command', {
         message: msg,
       });
     }

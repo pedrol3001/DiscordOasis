@@ -1,29 +1,37 @@
 import '../repositories';
 
 import { Client, Message, Guild } from 'discord.js';
+import { transport as TransportStream } from 'winston';
 import { prisma } from '../database';
 
+import logger from '../services/logger';
 import CommandHandler from './commands';
 import PluginsHandler from './plugins';
 
-import { OasisError } from '../logs/OasisError';
+import { OasisError } from '../error/OasisError';
 import { IOasisOptions } from '../interfaces/IOasisOptions';
 import { IPluginsHandler } from './plugins/IPluginsHandler';
 import { LoadGuildsController } from '../repositories/guild/useCases/LoadGuilds/LoadGuildsController';
 import { CreateGuildController } from '../repositories/guild/useCases/CreateGuild/CreateGuildController';
-import { OasisLog } from '../logs/OasisLog';
 
 class Oasis extends Client {
   readonly pluginsHandler: IPluginsHandler;
 
   constructor(options: IOasisOptions) {
     super(options);
-    const { plugins, commandsFolder, globalPrefix } = options;
+    const { plugins, commandsFolder, globalPrefix, loggerTransports } = options;
 
     this.commandHandler = new CommandHandler(commandsFolder, globalPrefix);
     this.pluginsHandler = new PluginsHandler(plugins || []);
 
     this.setDefaultCallbacks();
+    this.setLogTransports(loggerTransports);
+  }
+
+  private setLogTransports(transports: TransportStream[] | undefined): void {
+    transports?.forEach((transport) => {
+      logger.add(transport);
+    });
   }
 
   private async setupGuilds() {
@@ -33,15 +41,15 @@ class Oasis extends Client {
       guilds.map(async (guild) => {
         try {
           await CreateGuildController.handle({ id: guild.id, prefix: null });
-          new OasisLog(`Created guild ${guild.name}. ${guild.id}`).log();
+          logger.info(`Created guild ${guild.name}. ${guild.id}`);
         } catch (err) {
-          new OasisLog(`Guild ${guild.id} already exists. Skipping.`).warn();
+          logger.warn(`Guild ${guild.id} already exists. Skipping.`);
         }
       }),
     );
 
     await LoadGuildsController.handle(this);
-    new OasisLog('Server configured !!').log();
+    logger.verbose('Server configured !!');
   }
 
   private setDefaultCallbacks(): void {
@@ -54,7 +62,7 @@ class Oasis extends Client {
       pluginsHandler.setup(this.commandHandler);
 
       this.user?.setActivity('Online!');
-      new OasisLog('Ready!').log();
+      logger.verbose('Ready!');
     });
 
     this.on('messageCreate', async (msg: Message): Promise<void> => {
@@ -63,15 +71,17 @@ class Oasis extends Client {
 
     this.on('guildCreate', async (guild: Guild): Promise<void> => {
       const newGuild = await CreateGuildController.handle(guild);
-      new OasisLog(`Joined guild ${newGuild.id} called ${guild.name}`).log();
+      logger.info(`Joined guild ${newGuild.id} called ${guild.name}`);
     });
 
     this.on('error', (err) => {
       if (err instanceof OasisError) err.log();
-      else new OasisError('Unknown Error', err).log();
+      else logger.error('Unknown Error', err);
     });
 
-    this.on('debug', (db) => console.info(db));
+    this.on('debug', (db) => {
+      logger.info(db);
+    });
   }
 
   public async listen(token: string): Promise<void> {

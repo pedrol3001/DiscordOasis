@@ -5,7 +5,7 @@
 import { readdirSync } from 'fs';
 import { Collection } from 'discord.js';
 import { ICommand } from '../../../../../interfaces/ICommand';
-import { OasisError } from '../../../../../logs/OasisError';
+import { OasisError } from '../../../../../error/OasisError';
 import { IAddCommands } from '../IAddCommands';
 
 class AddCommandsFromFolder implements IAddCommands {
@@ -33,7 +33,7 @@ class AddCommandsFromFolder implements IAddCommands {
         collection.set(command.name, command); // Add command to collection
       }
     } catch (err) {
-      throw new OasisError('Error adding commands from folder', err, {
+      throw new OasisError('Error adding commands from folder', {
         folder: folderPath[0],
       });
     }

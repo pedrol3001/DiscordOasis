@@ -5,7 +5,7 @@
 import { readdirSync } from 'fs';
 import { Collection } from 'discord.js';
 import { ICommand } from '../../../../../interfaces/ICommand';
-import { OasisError } from '../../../../../logs/OasisError';
+import { OasisError } from '../../../../../error/OasisError';
 import { IRemoveCommands } from '../IRemoveCommands';
 
 class RemoveCommandsFromFolder implements IRemoveCommands {
@@ -25,7 +25,7 @@ class RemoveCommandsFromFolder implements IRemoveCommands {
         collection.delete(command.name);
       }
     } catch (err) {
-      throw new OasisError('Error deleting commands from folder', err, {
+      throw new OasisError('Error deleting commands from folder', {
         folder: folderPath,
       });
     }
