@@ -72,6 +72,11 @@ class CommandHandler implements ICommandHandler {
   }
 
   public async handleInteraction(interaction: Interaction, pluginsHandler: IPluginsHandler) {
+    if (!interaction.isCommand()) return;
+
+    this.setManager(interaction, pluginsHandler);
+
+    await this.executeInteraction(interaction);
     console.log(interaction, pluginsHandler);
   }
 
@@ -82,21 +87,26 @@ class CommandHandler implements ICommandHandler {
     this.setMessageArgs(message);
 
     this.setCommand(message);
-    if (!message.command) return;
 
     this.setManager(message, pluginsHandler);
+
+    await this.executeMessage(message);
+  }
+
+  private async executeMessage(message: Message) {
+    if (!message.command) return;
 
     try {
       for (const handler of this._on_begin_microHandlers) {
         // eslint-disable-next-line no-await-in-loop
-        await handler.handle(message);
+        await handler.handleMessage(message);
       }
 
-      await Promise.all(this._microHandlers.map(async (handler) => handler.handle(message)));
+      await Promise.all(this._microHandlers.map(async (handler) => handler.handleMessage(message)));
 
       for (const handler of this._on_end_microHandlers) {
         // eslint-disable-next-line no-await-in-loop
-        await handler.handle(message);
+        await handler.handleMessage(message);
       }
 
       await message.command.execute(message);
@@ -104,6 +114,33 @@ class CommandHandler implements ICommandHandler {
       if (!(err instanceof CommandError)) {
         throw new OasisError('Error executing command', {
           message,
+        });
+      }
+      err.send();
+    }
+  }
+
+  private async executeInteraction(interaction: CommandInteraction) {
+    if (!interaction.command) return;
+
+    try {
+      for (const handler of this._on_begin_microHandlers) {
+        // eslint-disable-next-line no-await-in-loop
+        await handler.handleInteraction(interaction);
+      }
+
+      await Promise.all(this._microHandlers.map(async (handler) => handler.handleInteraction(interaction)));
+
+      for (const handler of this._on_end_microHandlers) {
+        // eslint-disable-next-line no-await-in-loop
+        await handler.handleInteraction(interaction);
+      }
+
+      await interaction.command.execute(interaction);
+    } catch (err) {
+      if (!(err instanceof CommandError)) {
+        throw new OasisError('Error executing command', {
+          interaction,
         });
       }
       err.send();
@@ -118,7 +155,7 @@ class CommandHandler implements ICommandHandler {
     }
 
     if (message.guild?.prefix && message.content.startsWith(message.guild.prefix)) {
-      message.prefix = message.guild.prefix; // guild prefix
+      message.prefix = message.guild.prefix;
     }
   }
 
@@ -127,14 +164,14 @@ class CommandHandler implements ICommandHandler {
     msg.args = msg.content.trim().split(/\s+/);
   }
 
-  private setCommand(msg: Message) {
+  private setCommand(msg: Message | CommandInteraction) {
     const commandMsg = new Array<string>();
     while (!msg.command && msg.args.length > 0) {
       commandMsg.push(msg.args.shift()?.toLowerCase() || '');
       const commandByName = this._commands.get(commandMsg.join(' '));
       const commandByAliases = this._commands.find((cmd) => cmd.aliases?.includes(commandMsg.join(' ')));
 
-      msg.command = commandByName || commandByAliases || null;
+      Object.assign(msg.command, commandByName || commandByAliases);
     }
   }
 

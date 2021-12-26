@@ -1,7 +1,8 @@
-import { Message } from 'discord.js';
+import { CommandInteraction, Message } from 'discord.js';
 
 interface IMicroHandler {
-  handle(msg: Message): Promise<void>;
+  handleMessage(cmd: Message): Promise<void>;
+  handleInteraction(cmd: CommandInteraction): Promise<void>;
 }
 
 export { IMicroHandler };

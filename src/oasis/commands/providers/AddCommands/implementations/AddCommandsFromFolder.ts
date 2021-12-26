@@ -23,7 +23,6 @@ class AddCommandsFromFolder implements IAddCommands {
         const command: ICommand = require(`${folderPath}/${file}`).default;
 
         Object.assign(command, { pluginId });
-        // command.pluginId = pluginId;
 
         const alreadyExists = collection.get(command.name);
 

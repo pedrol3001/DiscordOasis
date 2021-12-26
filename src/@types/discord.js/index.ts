@@ -13,12 +13,16 @@ declare module 'discord.js' {
 
   export interface Message {
     prefix: string;
-    args: Array<string>;
     manager: AbstractPlugin | null;
     command: ICommand | null;
+    args: Array<string>;
   }
 
   export interface CommandInteraction {
     manager: AbstractPlugin | null;
+    args: Array<string>;
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  export interface ApplicationCommand extends ICommand {}
 }

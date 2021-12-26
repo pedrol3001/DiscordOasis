@@ -5,3 +5,5 @@ export type constructor<T> = new (...args: string[]) => T;
 export type GenericObject = { [key: string]: unknown };
 
 export type ThenArg<T> = T extends PromiseLike<infer U> ? U : T;
+
+export type Modify<T, R> = Omit<T, keyof R> & R;

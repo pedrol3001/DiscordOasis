@@ -1,17 +1,21 @@
-import { Message } from 'discord.js';
+import { CommandInteraction, Message } from 'discord.js';
 import { CommandError } from '../../../commands/error/CommandError';
 import { IMicroHandler } from '../IMicroHandler';
 
 class PermissionsMicroHandler implements IMicroHandler {
-  async handle(msg: Message): Promise<void> {
+  async handleMessage(message: Message) {
     // permissions handler
-    if (!msg.guild || !msg.command?.permissions) return;
-    for (const requiredPermission of msg.command.permissions) {
-      if (!msg.member?.permissions.has(requiredPermission)) {
-        const reply = `This command requires the permissions ${msg.command.permissions.join(', ')}`;
-        throw new CommandError(reply, msg.channel);
+    if (!message.guild || !message.command?.permissionsList) return;
+    for (const requiredPermission of message.command.permissionsList) {
+      if (!message.member?.permissions.has(requiredPermission)) {
+        const reply = `This command requires the permissions ${message.command.permissionsList.join(', ')}`;
+        throw new CommandError(reply, message.channel);
       }
     }
+  }
+
+  async handleInteraction(interaction: CommandInteraction) {
+    console.log(interaction);
   }
 }
 
