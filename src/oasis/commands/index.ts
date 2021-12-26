@@ -23,13 +23,13 @@ export type IMicroHandlerExecutionMode = 'onBegin' | 'async' | 'onEnd';
 class CommandHandler implements ICommandHandler {
   private _commands: Collection<string, ICommand> = new Collection<string, ICommand>();
 
-  private readonly _globalPrefix: string;
+  private readonly globalPrefix: string;
 
-  private _on_begin_microHandlers: IMicroHandler[];
+  private onBeginMicroHandlers: IMicroHandler[];
 
-  private _microHandlers: IMicroHandler[];
+  private microHandlers: IMicroHandler[];
 
-  private _on_end_microHandlers: IMicroHandler[];
+  private onEndMicroHandlers: IMicroHandler[];
 
   public get commands(): Array<ICommand> {
     return Array.from(this._commands.values());
@@ -38,28 +38,28 @@ class CommandHandler implements ICommandHandler {
   public constructor(commandsFolder: string, globalPrefix: string) {
     this.edit(AddCommandsFromFolder, commandsFolder);
 
-    this._globalPrefix = globalPrefix;
-    this._microHandlers = [
+    this.globalPrefix = globalPrefix;
+    this.microHandlers = [
       new ArgsMicroHandler(),
       new GroupsMicroHandler(),
       new PermissionsMicroHandler(),
       new RolesMicroHandler(),
     ];
 
-    this._on_begin_microHandlers = [new PluginsMicroHandler(), new CooldownsMicroHandler()];
-    this._on_end_microHandlers = [];
+    this.onBeginMicroHandlers = [new PluginsMicroHandler(), new CooldownsMicroHandler()];
+    this.onEndMicroHandlers = [];
   }
 
   public addMicroHandler(handler: IMicroHandler, onBegin: IMicroHandlerExecutionMode = 'async') {
     switch (onBegin) {
       case 'onBegin':
-        this._on_begin_microHandlers.push(handler);
+        this.onBeginMicroHandlers.push(handler);
         break;
       case 'async':
-        this._microHandlers.push(handler);
+        this.microHandlers.push(handler);
         break;
       case 'onEnd':
-        this._on_end_microHandlers.push(handler);
+        this.onEndMicroHandlers.push(handler);
         break;
       default:
         throw new OasisError('Invalid micro handler execution mode');
@@ -89,14 +89,14 @@ class CommandHandler implements ICommandHandler {
     if (!cmd.command) return;
 
     try {
-      for (const handler of this._on_begin_microHandlers) {
+      for (const handler of this.onBeginMicroHandlers) {
         // eslint-disable-next-line no-await-in-loop
         await handler.handle(cmd);
       }
 
-      await Promise.all(this._microHandlers.map(async (handler) => handler.handle(cmd)));
+      await Promise.all(this.microHandlers.map(async (handler) => handler.handle(cmd)));
 
-      for (const handler of this._on_end_microHandlers) {
+      for (const handler of this.onEndMicroHandlers) {
         // eslint-disable-next-line no-await-in-loop
         await handler.handle(cmd);
       }
@@ -115,8 +115,8 @@ class CommandHandler implements ICommandHandler {
   private setMessagePrefix(message: Message) {
     if (message.author.bot) return;
 
-    if (this._globalPrefix && message.content.startsWith(this._globalPrefix)) {
-      message.prefix = this._globalPrefix;
+    if (this.globalPrefix && message.content.startsWith(this.globalPrefix)) {
+      message.prefix = this.globalPrefix;
     }
 
     if (message.guild?.prefix && message.content.startsWith(message.guild.prefix)) {
