@@ -76,7 +76,7 @@ class CommandHandler implements ICommandHandler {
 
     this.setManager(interaction, pluginsHandler);
 
-    await this.executeInteraction(interaction);
+    await this.executeHandler(interaction);
   }
 
   public async handleMessage(message: Message, pluginsHandler: IPluginsHandler) {
@@ -89,57 +89,30 @@ class CommandHandler implements ICommandHandler {
 
     this.setManager(message, pluginsHandler);
 
-    await this.executeMessage(message);
+    await this.executeHandler(message);
   }
 
-  private async executeMessage(message: Message) {
-    if (!message.command) return;
+  private async executeHandler(cmd: Message | CommandInteraction) {
+    if (!cmd.command) return;
 
     try {
       for (const handler of this._on_begin_microHandlers) {
         // eslint-disable-next-line no-await-in-loop
-        await handler.handleMessage(message);
+        await handler.handle(cmd);
       }
 
-      await Promise.all(this._microHandlers.map(async (handler) => handler.handleMessage(message)));
+      await Promise.all(this._microHandlers.map(async (handler) => handler.handle(cmd)));
 
       for (const handler of this._on_end_microHandlers) {
         // eslint-disable-next-line no-await-in-loop
-        await handler.handleMessage(message);
+        await handler.handle(cmd);
       }
 
-      await message.command.execute(message);
+      await cmd.command.execute(cmd);
     } catch (err) {
       if (!(err instanceof CommandError)) {
         throw new OasisError('Error executing command', {
-          message,
-        });
-      }
-      err.send();
-    }
-  }
-
-  private async executeInteraction(interaction: CommandInteraction) {
-    if (!interaction.command) return;
-
-    try {
-      for (const handler of this._on_begin_microHandlers) {
-        // eslint-disable-next-line no-await-in-loop
-        await handler.handleInteraction(interaction);
-      }
-
-      await Promise.all(this._microHandlers.map(async (handler) => handler.handleInteraction(interaction)));
-
-      for (const handler of this._on_end_microHandlers) {
-        // eslint-disable-next-line no-await-in-loop
-        await handler.handleInteraction(interaction);
-      }
-
-      await interaction.command.execute(interaction);
-    } catch (err) {
-      if (!(err instanceof CommandError)) {
-        throw new OasisError('Error executing command', {
-          interaction,
+          cmd,
         });
       }
       err.send();

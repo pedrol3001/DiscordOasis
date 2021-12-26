@@ -5,20 +5,16 @@ import { CommandError } from '../../error/CommandError';
 import { IMicroHandler } from '../IMicroHandler';
 
 class PluginsMicroHandler implements IMicroHandler {
-  async handleMessage(message: Message) {
+  async handle(cmd: Message | CommandInteraction) {
     // plugins handler
-    if (!message.guild || !has(message.command, 'pluginId')) return;
-    const pluginId = get(message.command, 'pluginId');
-    const hasPlugin = await CheckGuildsPluginController.handle([message.guild?.id], pluginId);
+    if (!cmd.guild || !has(cmd.command, 'pluginId')) return;
+    const pluginId = get(cmd.command, 'pluginId');
+    const hasPlugin = await CheckGuildsPluginController.handle([cmd.guild?.id], pluginId);
 
     if (!hasPlugin) {
       const reply = `Your guild does not have this plugin enabled`;
-      throw new CommandError(reply, message.channel);
+      throw new CommandError(reply, cmd.channel);
     }
-  }
-
-  async handleInteraction(interaction: CommandInteraction) {
-    console.log(interaction);
   }
 }
 

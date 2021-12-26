@@ -1,22 +1,21 @@
-import { CommandInteraction, Message } from 'discord.js';
+import { CommandInteraction, Message, User } from 'discord.js';
 import { CommandError } from '../../../commands/error/CommandError';
 import { IMicroHandler } from '../IMicroHandler';
 
 class ArgsMicroHandler implements IMicroHandler {
-  async handleMessage(message: Message) {
+  async handle(cmd: Message | CommandInteraction) {
     // filter args handler
-    const validArgs = message.command?.args && message.args?.length !== 0;
-    const withoutArgs = !message.command?.args && message.args?.length === 0;
+    const validArgs = cmd.command?.args && cmd.args?.length !== 0;
+    const withoutArgs = !cmd.command?.args && cmd.args?.length === 0;
     if (validArgs || withoutArgs) return;
-    const reply =
-      `You didn't provide any arguments, ${message.author}!\n` +
-      `The proper usage would be: ` +
-      `\`${message.guild?.prefix}${message.command?.name} ${message.command?.usage ? message.command.usage : ''}\``;
-    throw new CommandError(reply, message.channel);
-  }
 
-  async handleInteraction(interaction: CommandInteraction) {
-    console.log(interaction);
+    const sender: User = cmd instanceof Message ? cmd.author : cmd.user;
+
+    const reply =
+      `You didn't provide any arguments, ${sender}!\n` +
+      `The proper usage would be: ` +
+      `\`${cmd.guild?.prefix}${cmd.command?.name} ${cmd.command?.usage ? cmd.command.usage : ''}\``;
+    throw new CommandError(reply, cmd.channel);
   }
 }
 

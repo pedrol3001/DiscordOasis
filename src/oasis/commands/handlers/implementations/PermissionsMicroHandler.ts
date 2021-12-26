@@ -3,19 +3,16 @@ import { CommandError } from '../../../commands/error/CommandError';
 import { IMicroHandler } from '../IMicroHandler';
 
 class PermissionsMicroHandler implements IMicroHandler {
-  async handleMessage(message: Message) {
+  async handle(cmd: Message | CommandInteraction) {
     // permissions handler
-    if (!message.guild || !message.command?.permissionsList) return;
-    for (const requiredPermission of message.command.permissionsList) {
-      if (!message.member?.permissions.has(requiredPermission)) {
-        const reply = `This command requires the permissions ${message.command.permissionsList.join(', ')}`;
-        throw new CommandError(reply, message.channel);
+    if (!cmd.guild || !cmd.member || !cmd.command?.permissionsList) return;
+    for (const requiredPermission of cmd.command.permissionsList) {
+      const permissions = cmd.member.permissions as Exclude<typeof cmd.member.permissions, string>;
+      if (!permissions.has(requiredPermission)) {
+        const reply = `This command requires the permissions ${cmd.command.permissionsList.join(', ')}`;
+        throw new CommandError(reply, cmd.channel);
       }
     }
-  }
-
-  async handleInteraction(interaction: CommandInteraction) {
-    console.log(interaction);
   }
 }
 

@@ -1,7 +1,7 @@
 import { TextBasedChannel } from 'discord.js';
 
 class CommandError {
-  constructor(public message?: string, public channel?: TextBasedChannel) {}
+  constructor(public message?: string, public channel?: TextBasedChannel | null) {}
 
   async send(): Promise<void> {
     if (this.message === undefined) return;
