@@ -4,14 +4,14 @@ import { ICommand } from '../interfaces/ICommand';
 import { discordRest } from './rest';
 import logger from '../services/logger';
 
-function parseCommand(command: ICommand): any {
+function parseCommand(command: ICommand): unknown {
   const data = new SlashCommandBuilder();
   data.setName(command.name);
   data.setDescription(command.description);
   return data.toJSON();
 }
 
-async function registerCommands(clientId: string, commands: any, guildId?: string) {
+async function registerCommands(clientId: string, commands: unknown, guildId?: string) {
   try {
     logger.info('Started refreshing application (/) commands.');
 
