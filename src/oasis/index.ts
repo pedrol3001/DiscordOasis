@@ -1,6 +1,6 @@
 import '../repositories';
 
-import { Client, Message, Guild } from 'discord.js';
+import { Client, Message, Guild, Interaction } from 'discord.js';
 import { transport as TransportStream } from 'winston';
 import { prisma } from '../database';
 
@@ -65,8 +65,12 @@ class Oasis extends Client {
       logger.verbose('Ready!');
     });
 
-    this.on('messageCreate', async (msg: Message): Promise<void> => {
-      await commandHandler.handle(msg, pluginsHandler);
+    this.on('messageCreate', async (message: Message): Promise<void> => {
+      await commandHandler.handleMessage(message, pluginsHandler);
+    });
+
+    this.on('interactionCreate', async (interaction: Interaction): Promise<void> => {
+      await commandHandler.handleInteraction(interaction, pluginsHandler);
     });
 
     this.on('guildCreate', async (guild: Guild): Promise<void> => {

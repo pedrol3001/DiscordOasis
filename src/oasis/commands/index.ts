@@ -1,4 +1,4 @@
-import { Collection, Message } from 'discord.js';
+import { Collection, Interaction, Message } from 'discord.js';
 
 import { get } from 'lodash';
 import { ICommand } from '../../interfaces/ICommand';
@@ -71,74 +71,76 @@ class CommandHandler implements ICommandHandler {
     await provider.handle(this._commands, ...args);
   }
 
-  public async handle(msg: Message, pluginsHandler: IPluginsHandler): Promise<void> {
-    this.setPrefix(msg);
-    if (!msg.prefix) return;
+  public async handleInteraction(interaction: Interaction, pluginsHandler: IPluginsHandler) {
+    console.log(interaction);
+  }
 
-    this.setArgs(msg);
+  public async handleMessage(message: Message, pluginsHandler: IPluginsHandler) {
+    this.setPrefix(message);
+    if (!message.prefix) return;
 
-    this.setCommand(msg);
-    if (!msg.command) return;
+    this.setArgs(message);
 
-    this.setManager(msg, pluginsHandler);
+    this.setCommand(message);
+    if (!message.command) return;
+
+    this.setManager(message, pluginsHandler);
 
     try {
       for (const handler of this._on_begin_microHandlers) {
         // eslint-disable-next-line no-await-in-loop
-        await handler.handle(msg);
+        await handler.handle(message);
       }
 
-      await Promise.all(this._microHandlers.map(async (handler) => handler.handle(msg)));
+      await Promise.all(this._microHandlers.map(async (handler) => handler.handle(message)));
 
       for (const handler of this._on_end_microHandlers) {
         // eslint-disable-next-line no-await-in-loop
-        await handler.handle(msg);
+        await handler.handle(message);
       }
 
-      await msg.command.execute(msg);
+      await message.command.execute(message);
     } catch (err) {
-      if (err instanceof CommandError) {
-        err.send();
-        return;
+      if (!(err instanceof CommandError)) {
+        throw new OasisError('Error executing command', {
+          message,
+        });
       }
-
-      throw new OasisError('Error executing command', {
-        message: msg,
-      });
+      err.send();
     }
   }
 
-  private setPrefix(msg: Message) {
-    if (msg.author.bot) return;
+  private setPrefix(message: Message) {
+    if (message.author.bot) return;
 
-    if (this._globalPrefix && msg.content.startsWith(this._globalPrefix)) {
-      msg.prefix = this._globalPrefix;
+    if (this._globalPrefix && message.content.startsWith(this._globalPrefix)) {
+      message.prefix = this._globalPrefix;
     }
 
-    if (msg.guild?.prefix && msg.content.startsWith(msg.guild.prefix)) {
-      msg.prefix = msg.guild.prefix; // guild prefix
-    }
-  }
-
-  private setArgs(msg: Message) {
-    msg.content = msg.content.slice(msg.prefix.length);
-    msg.args = msg.content.trim().split(/\s+/);
-  }
-
-  private setCommand(msg: Message) {
-    const commandMsg = new Array<string>();
-    while (!msg.command && msg.args.length > 0) {
-      commandMsg.push(msg.args.shift()?.toLowerCase() || '');
-      const commandByName = this._commands.get(commandMsg.join(' '));
-      const commandByAliases = this._commands.find((cmd) => cmd.aliases?.includes(commandMsg.join(' ')));
-
-      msg.command = commandByName || commandByAliases || null;
+    if (message.guild?.prefix && message.content.startsWith(message.guild.prefix)) {
+      message.prefix = message.guild.prefix; // guild prefix
     }
   }
 
-  private setManager(msg: Message, pluginsHandler: IPluginsHandler) {
-    const pluginId = get(msg.command, 'pluginId');
-    msg.manager = pluginId ? pluginsHandler.plugins.get(pluginId) || null : null;
+  private setArgs(message: Message) {
+    message.content = message.content.slice(message.prefix.length);
+    message.args = message.content.trim().split(/\s+/);
+  }
+
+  private setCommand(message: Message) {
+    const commandmessage = new Array<string>();
+    while (!message.command && message.args.length > 0) {
+      commandmessage.push(message.args.shift()?.toLowerCase() || '');
+      const commandByName = this._commands.get(commandmessage.join(' '));
+      const commandByAliases = this._commands.find((cmd) => cmd.aliases?.includes(commandmessage.join(' ')));
+
+      message.command = commandByName || commandByAliases || null;
+    }
+  }
+
+  private setManager(message: Message, pluginsHandler: IPluginsHandler) {
+    const pluginId = get(message.command, 'pluginId');
+    message.manager = pluginId ? pluginsHandler.plugins.get(pluginId) || null : null;
   }
 }
 export default CommandHandler;
