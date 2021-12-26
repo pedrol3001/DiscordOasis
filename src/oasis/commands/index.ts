@@ -1,4 +1,4 @@
-import { Collection, Interaction, Message } from 'discord.js';
+import { Collection, CommandInteraction, Interaction, Message } from 'discord.js';
 
 import { get } from 'lodash';
 import { ICommand } from '../../interfaces/ICommand';
@@ -72,14 +72,14 @@ class CommandHandler implements ICommandHandler {
   }
 
   public async handleInteraction(interaction: Interaction, pluginsHandler: IPluginsHandler) {
-    console.log(interaction);
+    console.log(interaction, pluginsHandler);
   }
 
   public async handleMessage(message: Message, pluginsHandler: IPluginsHandler) {
-    this.setPrefix(message);
+    this.setMessagePrefix(message);
     if (!message.prefix) return;
 
-    this.setArgs(message);
+    this.setMessageArgs(message);
 
     this.setCommand(message);
     if (!message.command) return;
@@ -110,7 +110,7 @@ class CommandHandler implements ICommandHandler {
     }
   }
 
-  private setPrefix(message: Message) {
+  private setMessagePrefix(message: Message) {
     if (message.author.bot) return;
 
     if (this._globalPrefix && message.content.startsWith(this._globalPrefix)) {
@@ -122,25 +122,25 @@ class CommandHandler implements ICommandHandler {
     }
   }
 
-  private setArgs(message: Message) {
-    message.content = message.content.slice(message.prefix.length);
-    message.args = message.content.trim().split(/\s+/);
+  private setMessageArgs(msg: Message) {
+    msg.content = msg.content.slice(msg.prefix.length);
+    msg.args = msg.content.trim().split(/\s+/);
   }
 
-  private setCommand(message: Message) {
-    const commandmessage = new Array<string>();
-    while (!message.command && message.args.length > 0) {
-      commandmessage.push(message.args.shift()?.toLowerCase() || '');
-      const commandByName = this._commands.get(commandmessage.join(' '));
-      const commandByAliases = this._commands.find((cmd) => cmd.aliases?.includes(commandmessage.join(' ')));
+  private setCommand(msg: Message) {
+    const commandMsg = new Array<string>();
+    while (!msg.command && msg.args.length > 0) {
+      commandMsg.push(msg.args.shift()?.toLowerCase() || '');
+      const commandByName = this._commands.get(commandMsg.join(' '));
+      const commandByAliases = this._commands.find((cmd) => cmd.aliases?.includes(commandMsg.join(' ')));
 
-      message.command = commandByName || commandByAliases || null;
+      msg.command = commandByName || commandByAliases || null;
     }
   }
 
-  private setManager(message: Message, pluginsHandler: IPluginsHandler) {
-    const pluginId = get(message.command, 'pluginId');
-    message.manager = pluginId ? pluginsHandler.plugins.get(pluginId) || null : null;
+  private setManager(cmd: Message | CommandInteraction, pluginsHandler: IPluginsHandler) {
+    const pluginId = get(cmd.command, 'pluginId');
+    cmd.manager = pluginId ? pluginsHandler.plugins.get(pluginId) || null : null;
   }
 }
 export default CommandHandler;

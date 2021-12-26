@@ -53,8 +53,7 @@ class Oasis extends Client {
   }
 
   private setDefaultCallbacks(): void {
-    const { pluginsHandler } = this;
-    const { commandHandler } = this;
+    const { pluginsHandler, commandHandler } = this;
 
     this.once('ready', async () => {
       await this.setupGuilds();
