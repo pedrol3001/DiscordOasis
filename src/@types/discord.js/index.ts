@@ -17,4 +17,10 @@ declare module 'discord.js' {
     manager: AbstractPlugin | null;
     command: ICommand | null;
   }
+
+  export interface Interaction {
+    args: Array<string>;
+    manager: AbstractPlugin | null;
+    command: ICommand | null;
+  }
 }
