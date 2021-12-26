@@ -8,6 +8,7 @@ import { parseCommand, registerCommands } from '../../../../../services/slash';
 import { ICommand } from '../../../../../interfaces/ICommand';
 import { OasisError } from '../../../../../error/OasisError';
 import { IAddCommands } from '../IAddCommands';
+import { GetPluginGuildController } from '../../../../../repositories/plugin/useCases/GetPluginGuilds/GetPluginGuildController';
 
 class AddCommandsFromFolder implements IAddCommands {
   public handle(collection: Collection<string, ICommand>, ...args: string[]): void {
@@ -18,7 +19,7 @@ class AddCommandsFromFolder implements IAddCommands {
         file.endsWith(process.env.NODE_ENV === 'production' ? '.js' : '.ts'),
       );
 
-      const slashCommandsJSON = [];
+      const slashCommandsJSON: Array<unknown> = [];
 
       for (const file of commandFiles) {
         delete require.cache[require.resolve(`${folderPath}/${file}`)];
@@ -37,7 +38,15 @@ class AddCommandsFromFolder implements IAddCommands {
         slashCommandsJSON.push(parseCommand(command)); // Add command to slash commands json
       }
 
-      registerCommands(applicationId, slashCommandsJSON); // Register commands in slash commands json
+      if (pluginId === undefined) {
+        registerCommands(applicationId, slashCommandsJSON); // Register commands in slash commands json
+      } else {
+        GetPluginGuildController.handle(pluginId).then((guilds) => {
+          guilds.forEach((guild) => {
+            registerCommands(applicationId, slashCommandsJSON, guild.id); // Register commands in slash commands json
+          });
+        });
+      }
     } catch (err) {
       throw new OasisError('Error adding commands from folder', {
         folder: folderPath[0],
