@@ -71,27 +71,18 @@ class CommandHandler implements ICommandHandler {
     await provider.handle(this._commands, ...args);
   }
 
-  public async handleInteraction(interaction: Interaction, pluginsHandler: IPluginsHandler) {
-    if (!interaction.isCommand()) return;
+  public async handle(cmd: Message | Interaction, pluginsHandler: IPluginsHandler) {
+    if (cmd instanceof Interaction) {
+      if (!cmd.isCommand()) return;
+    } else {
+      this.setMessagePrefix(cmd);
+      if (!cmd.prefix) return;
+      this.setMessageArgs(cmd);
+    }
 
-    this.setCommand(interaction);
-
-    this.setManager(interaction, pluginsHandler);
-
-    await this.executeHandler(interaction);
-  }
-
-  public async handleMessage(message: Message, pluginsHandler: IPluginsHandler) {
-    this.setMessagePrefix(message);
-    if (!message.prefix) return;
-
-    this.setMessageArgs(message);
-
-    this.setCommand(message);
-
-    this.setManager(message, pluginsHandler);
-
-    await this.executeHandler(message);
+    this.setCommand(cmd);
+    this.setManager(cmd, pluginsHandler);
+    await this.executeHandler(cmd);
   }
 
   private async executeHandler(cmd: Message | CommandInteraction) {

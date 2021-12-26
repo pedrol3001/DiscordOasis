@@ -65,11 +65,11 @@ class Oasis extends Client {
     });
 
     this.on('messageCreate', async (message: Message): Promise<void> => {
-      await commandHandler.handleMessage(message, pluginsHandler);
+      await commandHandler.handle(message, pluginsHandler);
     });
 
     this.on('interactionCreate', async (interaction: Interaction): Promise<void> => {
-      await commandHandler.handleInteraction(interaction, pluginsHandler);
+      await commandHandler.handle(interaction, pluginsHandler);
     });
 
     this.on('guildCreate', async (guild: Guild): Promise<void> => {
