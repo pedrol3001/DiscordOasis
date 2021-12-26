@@ -1,5 +1,6 @@
 import { Collection, Message } from 'discord.js';
 
+import { get } from 'lodash';
 import { ICommand } from '../../interfaces/ICommand';
 import { OasisError } from '../../error/OasisError';
 
@@ -136,7 +137,7 @@ class CommandHandler implements ICommandHandler {
   }
 
   private setManager(msg: Message, pluginsHandler: IPluginsHandler) {
-    const pluginId = msg.command?.pluginId;
+    const pluginId = get(msg.command, 'pluginId');
     msg.manager = pluginId ? pluginsHandler.plugins.get(pluginId) || null : null;
   }
 }

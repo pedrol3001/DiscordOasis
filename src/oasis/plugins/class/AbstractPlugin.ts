@@ -1,7 +1,7 @@
 import { OasisError } from '../../../error/OasisError';
 import { ICommandHandler } from '../../commands/ICommandHandler';
 import { AddCommandsFromFolder } from '../../commands/providers/AddCommands/implementations/AddCommandsFromFolder';
-import { RemoveCommandsFromPlugin } from '../../commands/providers/RemoveCommands/implementations/RemoveCommandsFromPlugin';
+import { RemoveCommandsFromFolder } from '../../commands/providers/RemoveCommands/implementations/RemoveCommandsFromFolder';
 
 abstract class AbstractPlugin {
   id: string | undefined;
@@ -25,8 +25,8 @@ abstract class AbstractPlugin {
   }
 
   unset(commands: ICommandHandler): void {
-    // TODO
-    commands.edit(RemoveCommandsFromPlugin);
+    if (this.id) commands.edit(RemoveCommandsFromFolder, this.commandsFolder);
+    else throw new OasisError("Can't unset a plugin before it's setup");
   }
 }
 

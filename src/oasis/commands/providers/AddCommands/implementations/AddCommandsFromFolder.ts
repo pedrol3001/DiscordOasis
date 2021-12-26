@@ -10,7 +10,7 @@ import { IAddCommands } from '../IAddCommands';
 
 class AddCommandsFromFolder implements IAddCommands {
   public handle(collection: Collection<string, ICommand>, ...args: string[]): void {
-    const [folderPath, plugin] = args;
+    const [folderPath, pluginId] = args;
 
     try {
       const commandFiles = readdirSync(folderPath).filter((file) =>
@@ -22,7 +22,8 @@ class AddCommandsFromFolder implements IAddCommands {
 
         const command: ICommand = require(`${folderPath}/${file}`).default;
 
-        command.pluginId = plugin || undefined;
+        Object.assign(command, { pluginId });
+        // command.pluginId = pluginId;
 
         const alreadyExists = collection.get(command.name);
 
