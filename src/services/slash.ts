@@ -34,13 +34,12 @@ function parseCommand(command: ICommand): unknown {
 
 async function registerCommands(clientId: string, commands: unknown, guildId?: string) {
   try {
-    logger.info('Started refreshing application (/) commands.');
     const routes =
       guildId === undefined ? Routes.applicationCommands(clientId) : Routes.applicationGuildCommands(clientId, guildId);
 
     await discordRest.put(routes, { body: commands });
 
-    logger.info('Successfully reloaded application (/) commands.');
+    logger.info('Successfully reloaded application (/) commands.', commands);
   } catch (err) {
     logger.error(err);
   }

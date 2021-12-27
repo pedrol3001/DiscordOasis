@@ -8,6 +8,7 @@ const logger = createLogger({
 if (process.env.NODE_ENV !== 'production') {
   logger.add(
     new transports.Console({
+      level: 'debug',
       handleExceptions: true,
       handleRejections: true,
       format: format.prettyPrint(),
