@@ -4,6 +4,7 @@
 
 import { readdirSync } from 'fs';
 import { Collection } from 'discord.js';
+import { recursiveMergeArrayBy } from '../../../../../utils/utils';
 import { parseCommand, registerCommands } from '../../../../../services/slash';
 import { ICommand } from '../../../../../interfaces/ICommand';
 import { OasisError } from '../../../../../error/OasisError';
@@ -38,12 +39,14 @@ class AddCommandsFromFolder implements IAddCommands {
         slashCommandsJSON.push(parseCommand(command)); // Add command to slash commands json
       }
 
+      const mergedSlashCommands = recursiveMergeArrayBy(slashCommandsJSON, 'name');
+
       if (pluginId === undefined) {
-        registerCommands(applicationId, slashCommandsJSON); // Register commands in slash commands json
+        registerCommands(applicationId, mergedSlashCommands); // Register commands in slash commands json
       } else {
         GetPluginGuildsController.handle(pluginId).then((guilds) => {
           guilds.forEach((guild) => {
-            registerCommands(applicationId, slashCommandsJSON, guild.id); // Register commands in slash commands json
+            registerCommands(applicationId, mergedSlashCommands, guild.id); // Register commands in slash commands json
           });
         });
       }

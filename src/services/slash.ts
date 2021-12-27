@@ -16,13 +16,11 @@ function parseCommand(command: ICommand): unknown {
   const subCommand = new SlashCommandSubcommandBuilder();
 
   commandData.setName(commandName);
-  commandData.setDescription(command.description);
 
   if (subCommandGroupName && subCommandName) {
     const subCommandGroup = new SlashCommandSubcommandGroupBuilder();
 
     subCommandGroup.setName(subCommandGroupName);
-    subCommandGroup.setDescription(command.description);
     commandData.addSubcommandGroup(subCommandGroup);
 
     subCommand.setName(subCommandName);
@@ -32,6 +30,8 @@ function parseCommand(command: ICommand): unknown {
     subCommand.setName(subCommandGroupName);
     subCommand.setDescription(command.description);
     commandData.addSubcommand(subCommand);
+  } else {
+    commandData.setDescription(command.description);
   }
 
   return commandData.toJSON();
