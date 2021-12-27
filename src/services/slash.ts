@@ -20,11 +20,12 @@ function parseCommand(command: ICommand): unknown {
 
   if (subCommandGroupName) {
     subCommandGroup.setName(subCommandGroupName);
+    subCommandGroup.setDescription(command.description);
     commandData.addSubcommandGroup(subCommandGroup);
   }
-
-  if (subCommandName) {
+  if (subCommandName !== undefined) {
     subCommand.setName(subCommandName);
+    subCommand.setDescription(command.description);
     subCommandGroup.addSubcommand(subCommand);
   }
 
