@@ -118,6 +118,7 @@ class CommandHandler implements ICommandHandler {
       if (!(err instanceof CommandError)) {
         throw new OasisError('Error executing command', {
           cmd,
+          error: err,
         });
       }
       err.send();

@@ -92,7 +92,7 @@ class Oasis extends Client {
     });
 
     this.on('debug', (db) => {
-      logger.info(db);
+      logger.debug(db);
     });
   }
 

@@ -50,6 +50,7 @@ class AddCommandsFromFolder implements IAddCommands {
     } catch (err) {
       throw new OasisError('Error adding commands from folder', {
         folder: folderPath,
+        error: err,
       });
     }
   }
