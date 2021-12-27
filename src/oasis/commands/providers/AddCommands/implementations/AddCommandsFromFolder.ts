@@ -5,22 +5,18 @@
 import { readdirSync } from 'fs';
 import { Collection } from 'discord.js';
 import { recursiveMergeArrayBy } from '../../../../../utils/utils';
-import { parseCommand, registerCommands } from '../../../../../services/slash';
 import { ICommand } from '../../../../../interfaces/ICommand';
 import { OasisError } from '../../../../../error/OasisError';
 import { IAddCommands } from '../IAddCommands';
-import { GetPluginGuildsController } from '../../../../../repositories/plugin/useCases/GetPluginGuilds/GetPluginGuildsController';
 
 class AddCommandsFromFolder implements IAddCommands {
   public handle(collection: Collection<string, ICommand>, ...args: string[]): void {
-    const [folderPath, applicationId, pluginId] = args;
+    const [folderPath, pluginId] = args;
 
     try {
       const commandFiles = readdirSync(folderPath).filter((file) =>
         file.endsWith(process.env.NODE_ENV === 'production' ? '.js' : '.ts'),
       );
-
-      const slashCommandsJSON: Array<unknown> = [];
 
       for (const file of commandFiles) {
         delete require.cache[require.resolve(`${folderPath}/${file}`)];
@@ -36,19 +32,6 @@ class AddCommandsFromFolder implements IAddCommands {
         }
 
         collection.set(command.name, command); // Add command to collection
-        slashCommandsJSON.push(parseCommand(command)); // Add command to slash commands json
-      }
-
-      const mergedSlashCommands = recursiveMergeArrayBy(slashCommandsJSON, 'name');
-
-      if (pluginId === undefined) {
-        registerCommands(applicationId, mergedSlashCommands); // Register commands in slash commands json
-      } else {
-        GetPluginGuildsController.handle(pluginId).then((guilds) => {
-          guilds.forEach((guild) => {
-            registerCommands(applicationId, mergedSlashCommands, guild.id); // Register commands in slash commands json
-          });
-        });
       }
     } catch (err) {
       throw new OasisError('Error adding commands from folder', {
