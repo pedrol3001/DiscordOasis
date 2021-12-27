@@ -11,7 +11,7 @@ class GetPluginGuildsUseCase {
   ) {}
 
   public async execute(pluginId: string): Promise<Guild[]> {
-    return (await this.pluginRepository.findById(pluginId)).guilds;
+    return (await this.pluginRepository.findById(pluginId, { guilds: true })).guilds;
   }
 }
 

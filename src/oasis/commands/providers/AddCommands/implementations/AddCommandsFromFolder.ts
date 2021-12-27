@@ -8,7 +8,7 @@ import { parseCommand, registerCommands } from '../../../../../services/slash';
 import { ICommand } from '../../../../../interfaces/ICommand';
 import { OasisError } from '../../../../../error/OasisError';
 import { IAddCommands } from '../IAddCommands';
-import { GetPluginGuildController } from '../../../../../repositories/plugin/useCases/GetPluginGuilds/GetPluginGuildController';
+import { GetPluginGuildsController } from '../../../../../repositories/plugin/useCases/GetPluginGuilds/GetPluginGuildsController';
 
 class AddCommandsFromFolder implements IAddCommands {
   public handle(collection: Collection<string, ICommand>, ...args: string[]): void {
@@ -41,7 +41,7 @@ class AddCommandsFromFolder implements IAddCommands {
       if (pluginId === undefined) {
         registerCommands(applicationId, slashCommandsJSON); // Register commands in slash commands json
       } else {
-        GetPluginGuildController.handle(pluginId).then((guilds) => {
+        GetPluginGuildsController.handle(pluginId).then((guilds) => {
           guilds.forEach((guild) => {
             registerCommands(applicationId, slashCommandsJSON, guild.id); // Register commands in slash commands json
           });
@@ -49,7 +49,7 @@ class AddCommandsFromFolder implements IAddCommands {
       }
     } catch (err) {
       throw new OasisError('Error adding commands from folder', {
-        folder: folderPath[0],
+        folder: folderPath,
       });
     }
   }
