@@ -1,14 +1,34 @@
 import { Routes } from 'discord-api-types/v9';
-import { SlashCommandBuilder } from '@discordjs/builders';
+import {
+  SlashCommandBuilder,
+  SlashCommandSubcommandBuilder,
+  SlashCommandSubcommandGroupBuilder,
+} from '@discordjs/builders';
 import { ICommand } from '../interfaces/ICommand';
 import { discordRest } from './rest';
 import logger from '../services/logger';
 
 function parseCommand(command: ICommand): unknown {
-  const data = new SlashCommandBuilder();
-  data.setName(command.name);
-  data.setDescription(command.description);
-  return data.toJSON();
+  const [commandName, subCommandGroupName, subCommandName] = command.name.split(' ');
+
+  const commandData = new SlashCommandBuilder();
+  const subCommandGroup = new SlashCommandSubcommandGroupBuilder();
+  const subCommand = new SlashCommandSubcommandBuilder();
+
+  commandData.setName(commandName);
+  commandData.setDescription(command.description);
+
+  if (subCommandGroupName) {
+    subCommandGroup.setName(subCommandGroupName);
+    commandData.addSubcommandGroup(subCommandGroup);
+  }
+
+  if (subCommandName) {
+    subCommand.setName(subCommandName);
+    subCommandGroup.addSubcommand(subCommand);
+  }
+
+  return commandData.toJSON();
 }
 
 async function registerCommands(clientId: string, commands: unknown, guildId?: string) {
