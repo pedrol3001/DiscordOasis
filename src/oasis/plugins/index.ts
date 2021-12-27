@@ -1,3 +1,4 @@
+import { Collection } from 'discord.js';
 import { AbstractPlugin } from './class/AbstractPlugin';
 import { ICommandHandler } from '../commands/ICommandHandler';
 import { IPluginsHandler } from './IPluginsHandler';
@@ -5,31 +6,35 @@ import { GetPluginByNameController } from '../../repositories/plugin/useCases/Ge
 import { CreatePluginController } from '../../repositories/plugin/useCases/CreatePlugin/CreatePluginController';
 
 class PluginsHandler implements IPluginsHandler {
-  private _plugins: Map<string, AbstractPlugin>;
+  private _plugins: Collection<string, AbstractPlugin> = new Collection<string, AbstractPlugin>();
 
   constructor(pluginsManagers: AbstractPlugin[]) {
-    this._plugins = new Map();
-
     pluginsManagers.forEach((plugin) => {
       this._plugins.set(plugin.name, plugin);
     });
   }
 
-  get plugins(): Map<string, AbstractPlugin> {
+  public get plugins(): Collection<string, AbstractPlugin> {
     return this._plugins;
   }
 
-  setup(commandHandler: ICommandHandler) {
-    this._plugins.forEach(async (plugin: AbstractPlugin, pluginName: string) => {
-      if (!plugin) return;
-      const oldPlugin = await GetPluginByNameController.handle(pluginName);
-      const pluginDb = oldPlugin || (await CreatePluginController.handle({ name: pluginName }));
-      await plugin.setup(pluginDb.id);
-      await plugin.set(commandHandler);
+  async setup(commandHandler: ICommandHandler) {
+    await Promise.all(
+      this._plugins.map(async (plugin: AbstractPlugin, pluginName: string) => {
+        if (!plugin) return;
+        const oldPlugin = await GetPluginByNameController.handle(pluginName);
+        const pluginDb = oldPlugin || (await CreatePluginController.handle({ name: pluginName }));
+        await plugin.setup(pluginDb.id);
+        await plugin.set(commandHandler);
 
-      this._plugins.set(pluginDb.id, plugin);
-      this._plugins.delete(pluginName);
-    });
+        this.pluginsNameToId(pluginDb.id, pluginName, plugin);
+      }),
+    );
+  }
+
+  private pluginsNameToId(id: string, name: string, plugin: AbstractPlugin) {
+    this._plugins.set(id, plugin);
+    this._plugins.delete(name);
   }
 }
 

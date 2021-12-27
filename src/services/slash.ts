@@ -7,6 +7,7 @@ import {
 import { ICommand } from '../interfaces/ICommand';
 import { discordRest } from './rest';
 import logger from '../services/logger';
+import { recursiveMergeArrayBy } from '../utils/utils';
 
 function parseCommand(command: ICommand): unknown {
   const fullSplittedCommandName = command.name.split(' ');
@@ -41,13 +42,19 @@ async function registerCommands(clientId: string, commands: unknown, guildId?: s
   try {
     const routes =
       guildId === undefined ? Routes.applicationCommands(clientId) : Routes.applicationGuildCommands(clientId, guildId);
-
-    const response = await discordRest.put(routes, { body: commands });
-
-    logger.info('Successfully reloaded application (/) commands.', response);
+    return await discordRest.put(routes, { body: commands });
   } catch (err) {
-    logger.error(err);
+    return logger.error(err);
   }
 }
 
-export { registerCommands, parseCommand };
+async function setSlashCommands(applicationId: string, commands: ICommand[], guildId?: string) {
+  const slashCommandsJSON = commands.map((command) => {
+    return parseCommand(command);
+  });
+  const mergedSlashCommands = recursiveMergeArrayBy(slashCommandsJSON, 'name');
+  const response = await registerCommands(applicationId, mergedSlashCommands, guildId);
+  logger.info(`Successfully reloaded application (/) commands for guild ${guildId || 'Global'}`, response);
+}
+
+export { registerCommands, parseCommand, setSlashCommands };

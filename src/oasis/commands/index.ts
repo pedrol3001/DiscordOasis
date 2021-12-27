@@ -17,8 +17,7 @@ import { RolesMicroHandler } from './handlers/implementations/RolesMicroHandler'
 import { CooldownsMicroHandler } from './handlers/implementations/CooldownsMicroHandler';
 import { IPluginsHandler } from '../plugins/IPluginsHandler';
 import { PluginsMicroHandler } from './handlers/implementations/PluginsMicroHandler';
-import { registerCommands, parseCommand } from '../../services/slash';
-import { recursiveMergeArrayBy } from '../../utils/utils';
+import { setSlashCommands } from '../../services/slash';
 
 export type IMicroHandlerExecutionMode = 'onBegin' | 'async' | 'onEnd';
 
@@ -53,15 +52,9 @@ class CommandHandler implements ICommandHandler {
     this.onEndMicroHandlers = [];
   }
 
-  public setup(application: ClientApplication) {
-    this.edit(AddCommandsFromFolder, this.commandsFolder).then(() => {
-      const slashCommandsJSON: Array<unknown> = [];
-      this._commands.forEach((command) => {
-        slashCommandsJSON.push(parseCommand(command));
-      });
-      const mergedSlashCommands = recursiveMergeArrayBy(slashCommandsJSON, 'name');
-      registerCommands(application.id, mergedSlashCommands);
-    });
+  public async setup(application: ClientApplication) {
+    await this.edit(AddCommandsFromFolder, this.commandsFolder);
+    setSlashCommands(application.id, this.commands);
   }
 
   public addMicroHandler(handler: IMicroHandler, onBegin: IMicroHandlerExecutionMode = 'async') {

@@ -2,6 +2,7 @@ import '../repositories';
 
 import { Client, Message, Guild, Interaction } from 'discord.js';
 import { transport as TransportStream } from 'winston';
+import { get } from 'lodash';
 import { setDiscordRest } from '../services/rest';
 import { prisma } from '../database';
 
@@ -15,6 +16,7 @@ import { IPluginsHandler } from './plugins/IPluginsHandler';
 import { LoadGuildsController } from '../repositories/guild/useCases/LoadGuilds/LoadGuildsController';
 import { CreateGuildController } from '../repositories/guild/useCases/CreateGuild/CreateGuildController';
 import { ICommandHandler } from './commands/ICommandHandler';
+import { setSlashCommands } from '../services/slash';
 
 class Oasis extends Client {
   readonly commandHandler: ICommandHandler;
@@ -38,7 +40,7 @@ class Oasis extends Client {
     });
   }
 
-  private async setupGuilds() {
+  private async setupGuildsModels() {
     const guilds = this.guilds.cache;
 
     await Promise.all(
@@ -56,6 +58,25 @@ class Oasis extends Client {
     logger.verbose('Server configured !!');
   }
 
+  private async setupGuildsSlashCommands() {
+    return Promise.all(
+      this.guilds.cache.map(async (guild) => {
+        const commands = this.commandHandler.commands.filter((command) => {
+          const pluginId = get(command, 'pluginId', null);
+
+          return guild.plugins.some((plugin) => {
+            return plugin.id === pluginId;
+          });
+        });
+
+        if (!this.application) {
+          throw new OasisError('Application is invalid');
+        }
+        await setSlashCommands(this.application.id, commands, guild.id);
+      }),
+    );
+  }
+
   private setDefaultCallbacks(): void {
     const { pluginsHandler, commandHandler } = this;
 
@@ -64,10 +85,10 @@ class Oasis extends Client {
         throw new OasisError('Client has not initialized properly');
       }
 
-      await this.setupGuilds();
-      await LoadGuildsController.handle(this);
-      commandHandler.setup(this.application);
-      pluginsHandler.setup(this.commandHandler);
+      await this.setupGuildsModels();
+      await commandHandler.setup(this.application);
+      await pluginsHandler.setup(this.commandHandler);
+      await this.setupGuildsSlashCommands();
 
       this.user.setActivity('Online!');
       logger.verbose('Ready!');
