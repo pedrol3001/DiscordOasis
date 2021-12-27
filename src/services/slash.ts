@@ -28,8 +28,8 @@ function parseCommand(command: ICommand): unknown {
     subCommand.setName(subCommandName);
     subCommand.setDescription(command.description);
     subCommandGroup.addSubcommand(subCommand);
-  } else {
-    subCommand.setName(subCommandName);
+  } else if (subCommandGroupName) {
+    subCommand.setName(subCommandGroupName);
     subCommand.setDescription(command.description);
     commandData.addSubcommand(subCommand);
   }
