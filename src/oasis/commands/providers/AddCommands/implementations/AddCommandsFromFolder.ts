@@ -4,7 +4,6 @@
 
 import { readdirSync } from 'fs';
 import { Collection } from 'discord.js';
-import { recursiveMergeArrayBy } from '../../../../../utils/utils';
 import { ICommand } from '../../../../../interfaces/ICommand';
 import { OasisError } from '../../../../../error/OasisError';
 import { IAddCommands } from '../IAddCommands';
