@@ -20,8 +20,10 @@ abstract class AbstractPlugin {
   }
 
   set(commands: ICommandHandler): void {
-    if (this.id) commands.edit(AddCommandsFromFolder, this.commandsFolder, this.id);
-    else throw new OasisError("Can't set a plugin before it's setup");
+    const applicationId = commands.application?.id;
+    if (this.id && applicationId) {
+      commands.edit(AddCommandsFromFolder, this.commandsFolder, applicationId, this.id);
+    } else throw new OasisError("Can't set a plugin before it's setup");
   }
 
   unset(commands: ICommandHandler): void {

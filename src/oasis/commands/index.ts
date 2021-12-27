@@ -21,6 +21,8 @@ import { PluginsMicroHandler } from './handlers/implementations/PluginsMicroHand
 export type IMicroHandlerExecutionMode = 'onBegin' | 'async' | 'onEnd';
 
 class CommandHandler implements ICommandHandler {
+  private _application?: ClientApplication;
+
   private _commands: Collection<string, ICommand> = new Collection<string, ICommand>();
 
   private readonly globalPrefix: string;
@@ -33,10 +35,12 @@ class CommandHandler implements ICommandHandler {
 
   private onEndMicroHandlers: IMicroHandler[];
 
-  private application?: ClientApplication;
-
   public get commands(): Array<ICommand> {
     return Array.from(this._commands.values());
+  }
+
+  public get application(): ClientApplication | undefined {
+    return this._application;
   }
 
   public constructor(commandsFolder: string, globalPrefix: string) {
@@ -54,8 +58,8 @@ class CommandHandler implements ICommandHandler {
   }
 
   public setup(application: ClientApplication) {
-    this.application = application;
-    this.edit(AddCommandsFromFolder, this.commandsFolder, this.application.id);
+    this._application = application;
+    this.edit(AddCommandsFromFolder, this.commandsFolder, this._application.id);
   }
 
   public addMicroHandler(handler: IMicroHandler, onBegin: IMicroHandlerExecutionMode = 'async') {
