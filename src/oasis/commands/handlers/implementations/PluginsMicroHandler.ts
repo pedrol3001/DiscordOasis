@@ -11,7 +11,7 @@ class PluginsMicroHandler implements IMicroHandler {
     const pluginId = get(cmd.commandHolder, 'pluginId');
     const hasPlugin = await CheckGuildsPluginController.handle([cmd.guild?.id], pluginId);
 
-    if (!hasPlugin) {
+    if (!hasPlugin && pluginId) {
       const reply = `Your guild does not have this plugin enabled`;
       throw new CommandError(reply, cmd.channel);
     }
