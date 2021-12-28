@@ -1,9 +1,5 @@
 import { Routes } from 'discord-api-types/v9';
-import {
-  SlashCommandBuilder,
-  SlashCommandSubcommandBuilder,
-  SlashCommandSubcommandGroupBuilder,
-} from '@discordjs/builders';
+import { SlashCommandBuilder } from '@discordjs/builders';
 import { ICommand } from '../interfaces/ICommand';
 import { discordRest } from './rest';
 import logger from '../services/logger';
