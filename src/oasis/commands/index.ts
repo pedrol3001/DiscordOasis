@@ -1,6 +1,6 @@
 import { ClientApplication, Collection, CommandInteraction, Interaction, Message } from 'discord.js';
 
-import { get, set } from 'lodash';
+import { assign, get, set } from 'lodash';
 import { ICommand } from '../../interfaces/ICommand';
 import { OasisError } from '../../error/OasisError';
 
@@ -129,20 +129,17 @@ class CommandHandler implements ICommandHandler {
   private setArgs(cmd: Message | CommandInteraction) {
     if (cmd instanceof CommandInteraction) {
       const { commandName } = cmd;
-      let subCommandGroup = null;
-      let subCommand = null;
-      try {
-        subCommand = cmd.options.getSubcommand();
-        subCommandGroup = cmd.options.getSubcommandGroup();
-      } finally {
-        cmd.args = [commandName];
 
-        if (subCommandGroup) {
-          cmd.args.push(subCommandGroup);
-        }
-        if (subCommand) {
-          cmd.args.push(subCommand);
-        }
+      const subCommand = cmd.options.getSubcommand(false);
+      const subCommandGroup = cmd.options.getSubcommandGroup(false);
+
+      cmd.args = [commandName];
+
+      if (subCommandGroup) {
+        cmd.args.push(subCommandGroup);
+      }
+      if (subCommand) {
+        cmd.args.push(subCommand);
       }
     } else {
       const command = cmd.content.slice(cmd.prefix.length);
@@ -156,8 +153,8 @@ class CommandHandler implements ICommandHandler {
       commandMsg.push(msg.args.shift()?.toLowerCase() || '');
       const commandByName = this._commands.get(commandMsg.join(' '));
       const commandByAliases = this._commands.find((cmd) => cmd.aliases?.includes(commandMsg.join(' ')));
-
-      set(msg, 'command', commandByName || commandByAliases);
+      const command = commandByName || commandByAliases;
+      if (command) assign(msg.command, command);
     }
   }
 
