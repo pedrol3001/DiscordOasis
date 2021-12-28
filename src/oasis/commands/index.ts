@@ -16,7 +16,6 @@ import { RolesMicroHandler } from './handlers/implementations/RolesMicroHandler'
 import { CooldownsMicroHandler } from './handlers/implementations/CooldownsMicroHandler';
 import { IPluginsHandler } from '../plugins/IPluginsHandler';
 import { PluginsMicroHandler } from './handlers/implementations/PluginsMicroHandler';
-import { setSlashCommands } from '../../services/slash';
 
 export type IMicroHandlerExecutionMode = 'onBegin' | 'async' | 'onEnd';
 
@@ -46,9 +45,10 @@ class CommandHandler implements ICommandHandler {
     this.onEndMicroHandlers = [];
   }
 
-  public async setup(application: ClientApplication) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async setup(_application: ClientApplication) {
     await this.edit(AddCommandsFromFolder, this.commandsFolder);
-    setSlashCommands(application.id, this.commands);
+    // setSlashCommands(application.id, this.commands);
   }
 
   public addMicroHandler(handler: IMicroHandler, onBegin: IMicroHandlerExecutionMode = 'async') {

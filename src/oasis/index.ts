@@ -2,7 +2,6 @@ import '../repositories';
 
 import { Client, Message, Guild, Interaction } from 'discord.js';
 import { transport as TransportStream } from 'winston';
-import { get } from 'lodash';
 import { setDiscordRest } from '../services/rest';
 import { prisma } from '../database';
 
@@ -58,23 +57,12 @@ class Oasis extends Client {
     logger.verbose('Server configured !!');
   }
 
-  private async setupGuildsSlashCommands() {
-    return Promise.all(
-      this.guilds.cache.map(async (guild) => {
-        const commands = this.commandHandler.commands.filter((command) => {
-          const pluginId = get(command, 'pluginId', null);
-
-          return guild.plugins.some((plugin) => {
-            return plugin.id === pluginId;
-          });
-        });
-
-        if (!this.application) {
-          throw new OasisError('Application is invalid');
-        }
-        await setSlashCommands(this.application.id, commands, guild.id);
-      }),
-    );
+  private async setupSlashCommands() {
+    const { commands } = this.commandHandler;
+    if (!this.application) {
+      throw new OasisError('Application is invalid');
+    }
+    await setSlashCommands(this.application.id, commands);
   }
 
   private setDefaultCallbacks(): void {
@@ -88,7 +76,7 @@ class Oasis extends Client {
       await this.setupGuildsModels();
       await commandHandler.setup(this.application);
       await pluginsHandler.setup(this.commandHandler);
-      await this.setupGuildsSlashCommands();
+      await this.setupSlashCommands();
 
       this.user.setActivity('Online!');
       logger.verbose('Ready!');
