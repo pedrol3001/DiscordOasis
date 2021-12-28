@@ -14,27 +14,26 @@ function parseCommand(command: ICommand): unknown {
   const [commandName, subCommandGroupName, subCommandName] = fullSplittedCommandName;
 
   const commandData = new SlashCommandBuilder();
-  const subCommand = new SlashCommandSubcommandBuilder();
-
   commandData.setName(commandName);
   commandData.setDescription(command.description);
 
   if (subCommandGroupName && subCommandName) {
-    const subCommandGroup = new SlashCommandSubcommandGroupBuilder();
-
-    subCommandGroup.setName(subCommandGroupName);
-    subCommandGroup.setDescription(command.description);
-    commandData.addSubcommandGroup(subCommandGroup);
-
-    subCommand.setName(subCommandName);
-    subCommand.setDescription(command.description);
-    Object.assign(subCommand.options, ...command.options);
-    subCommandGroup.addSubcommand(subCommand);
+    commandData.addSubcommandGroup((subCommandGroup) => {
+      subCommandGroup.setName(subCommandGroupName);
+      subCommandGroup.setDescription(command.description);
+      subCommandGroup.addSubcommand((subCommand) => {
+        subCommand.setName(subCommandName);
+        subCommand.setDescription(command.description);
+        return subCommand;
+      });
+      return subCommandGroup;
+    });
   } else if (subCommandGroupName) {
-    subCommand.setName(subCommandGroupName);
-    subCommand.setDescription(command.description);
-    Object.assign(subCommand.options, ...command.options);
-    commandData.addSubcommand(subCommand);
+    commandData.addSubcommand((subCommand) => {
+      subCommand.setName(subCommandGroupName);
+      subCommand.setDescription(command.description);
+      return subCommand;
+    });
   } else {
     Object.assign(commandData.options, ...command.options);
   }
