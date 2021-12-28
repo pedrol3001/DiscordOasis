@@ -1,4 +1,6 @@
 import { Routes } from 'discord-api-types/v9';
+import { ApplicationCommandOptionTypes } from 'discord.js/typings/enums';
+
 import {
   SlashCommandBooleanOption,
   SlashCommandBuilder,
@@ -61,30 +63,40 @@ function parseCommand(command: ICommand): unknown {
   }
 
   command.options.forEach((option) => {
+    if (!subCommandRef) throw new OasisError('Unknown error reading the command');
+
     switch (option.type) {
       case 'BOOLEAN':
-        subCommandRef?.addBooleanOption(assign(new SlashCommandBooleanOption(), option));
+        option.type = ApplicationCommandOptionTypes.BOOLEAN as never;
+        subCommandRef.addBooleanOption(assign(new SlashCommandBooleanOption(), option));
         break;
       case 'NUMBER':
-        subCommandRef?.addNumberOption(assign(new SlashCommandNumberOption(), option));
+        option.type = ApplicationCommandOptionTypes.NUMBER as never;
+        subCommandRef.addNumberOption(assign(new SlashCommandNumberOption(), option));
         break;
       case 'INTEGER':
-        subCommandRef?.addIntegerOption(assign(new SlashCommandIntegerOption(), option));
+        option.type = ApplicationCommandOptionTypes.INTEGER as never;
+        subCommandRef.addIntegerOption(assign(new SlashCommandIntegerOption(), option));
         break;
       case 'STRING':
-        subCommandRef?.addStringOption(assign(new SlashCommandStringOption(), option));
+        option.type = ApplicationCommandOptionTypes.STRING as never;
+        subCommandRef.addStringOption(assign(new SlashCommandStringOption(), option));
         break;
       case 'MENTIONABLE':
-        subCommandRef?.addMentionableOption(assign(new SlashCommandMentionableOption(), option));
+        option.type = ApplicationCommandOptionTypes.MENTIONABLE as never;
+        subCommandRef.addMentionableOption(assign(new SlashCommandMentionableOption(), option));
         break;
       case 'USER':
-        subCommandRef?.addUserOption(assign(new SlashCommandUserOption(), option));
+        option.type = ApplicationCommandOptionTypes.USER as never;
+        subCommandRef.addUserOption(assign(new SlashCommandUserOption(), option));
         break;
       case 'CHANNEL':
-        subCommandRef?.addChannelOption(assign(new SlashCommandChannelOption(), option));
+        option.type = ApplicationCommandOptionTypes.CHANNEL as never;
+        subCommandRef.addChannelOption(assign(new SlashCommandChannelOption(), option));
         break;
       case 'ROLE':
-        subCommandRef?.addRoleOption(assign(new SlashCommandRoleOption(), option));
+        option.type = ApplicationCommandOptionTypes.ROLE as never;
+        subCommandRef.addRoleOption(assign(new SlashCommandRoleOption(), option));
         break;
       default:
         throw new OasisError('Argument type not supported');
