@@ -28,11 +28,15 @@ function parseCommand(command: ICommand): unknown {
 
     subCommand.setName(subCommandName);
     subCommand.setDescription(command.description);
+    Object.assign(subCommand.options, ...command.options);
     subCommandGroup.addSubcommand(subCommand);
   } else if (subCommandGroupName) {
     subCommand.setName(subCommandGroupName);
     subCommand.setDescription(command.description);
+    Object.assign(subCommand.options, ...command.options);
     commandData.addSubcommand(subCommand);
+  } else {
+    Object.assign(commandData.options, ...command.options);
   }
 
   return commandData.toJSON();

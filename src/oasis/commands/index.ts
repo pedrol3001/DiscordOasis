@@ -1,6 +1,6 @@
 import { ClientApplication, Collection, CommandInteraction, Interaction, Message } from 'discord.js';
 
-import { get } from 'lodash';
+import { get, set } from 'lodash';
 import { ICommand } from '../../interfaces/ICommand';
 import { OasisError } from '../../error/OasisError';
 
@@ -10,7 +10,6 @@ import { IAddCommands } from './providers/AddCommands/IAddCommands';
 import { IRemoveCommands } from './providers/RemoveCommands/IRemoveCommands';
 import { AddCommandsFromFolder } from './providers/AddCommands/implementations/AddCommandsFromFolder';
 import { IMicroHandler } from './handlers/IMicroHandler';
-import { ArgsMicroHandler } from './handlers/implementations/ArgsMicroHandler';
 import { GroupsMicroHandler } from './handlers/implementations/GroupsMicroHandler';
 import { PermissionsMicroHandler } from './handlers/implementations/PermissionsMicroHandler';
 import { RolesMicroHandler } from './handlers/implementations/RolesMicroHandler';
@@ -41,12 +40,7 @@ class CommandHandler implements ICommandHandler {
   public constructor(commandsFolder: string, globalPrefix: string) {
     this.commandsFolder = commandsFolder;
     this.globalPrefix = globalPrefix;
-    this.microHandlers = [
-      new ArgsMicroHandler(),
-      new GroupsMicroHandler(),
-      new PermissionsMicroHandler(),
-      new RolesMicroHandler(),
-    ];
+    this.microHandlers = [new GroupsMicroHandler(), new PermissionsMicroHandler(), new RolesMicroHandler()];
 
     this.onBeginMicroHandlers = [new PluginsMicroHandler(), new CooldownsMicroHandler()];
     this.onEndMicroHandlers = [];
@@ -84,9 +78,9 @@ class CommandHandler implements ICommandHandler {
     } else {
       this.setMessagePrefix(cmd);
       if (!cmd.prefix) return;
-      this.setMessageArgs(cmd);
     }
 
+    this.setArgs(cmd);
     this.setCommand(cmd);
     this.setManager(cmd, pluginsHandler);
     await this.executeHandler(cmd);
@@ -132,9 +126,28 @@ class CommandHandler implements ICommandHandler {
     }
   }
 
-  private setMessageArgs(msg: Message) {
-    msg.content = msg.content.slice(msg.prefix.length);
-    msg.args = msg.content.trim().split(/\s+/);
+  private setArgs(cmd: Message | CommandInteraction) {
+    if (cmd instanceof CommandInteraction) {
+      const { commandName } = cmd;
+      let subCommandGroup = null;
+      let subCommand = null;
+      try {
+        subCommand = cmd.options.getSubcommand();
+        subCommandGroup = cmd.options.getSubcommandGroup();
+      } finally {
+        cmd.args = [commandName];
+
+        if (subCommandGroup) {
+          cmd.args.push(subCommandGroup);
+        }
+        if (subCommand) {
+          cmd.args.push(subCommand);
+        }
+      }
+    } else {
+      const command = cmd.content.slice(cmd.prefix.length);
+      cmd.args = command.trim().split(/\s+/);
+    }
   }
 
   private setCommand(msg: Message | CommandInteraction) {
@@ -144,7 +157,7 @@ class CommandHandler implements ICommandHandler {
       const commandByName = this._commands.get(commandMsg.join(' '));
       const commandByAliases = this._commands.find((cmd) => cmd.aliases?.includes(commandMsg.join(' ')));
 
-      Object.assign(msg.command, commandByName || commandByAliases);
+      set(msg, 'command', commandByName || commandByAliases);
     }
   }
 

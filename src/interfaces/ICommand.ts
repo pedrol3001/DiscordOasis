@@ -1,4 +1,4 @@
-import { Message, BitFieldResolvable, PermissionString, Interaction } from 'discord.js';
+import { Message, BitFieldResolvable, PermissionString, Interaction, ApplicationCommandOption } from 'discord.js';
 
 export type ICommandGroups = 'guildOnly' | 'global' | 'dmOnly';
 
@@ -7,8 +7,7 @@ export interface ICommand {
   group: ICommandGroups;
   aliases: Array<string>;
   description: string;
-  args?: boolean;
-  usage?: string;
+  options: ApplicationCommandOption[];
   cooldown?: number;
   rolesList?: Array<string>;
   permissionsList?: Array<BitFieldResolvable<PermissionString, bigint>>;
