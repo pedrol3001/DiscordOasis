@@ -5,7 +5,7 @@ class CommandError {
 
   async send(): Promise<void> {
     if (this.message === undefined) return;
-    await this.channel?.send(this.message || 'An error occurred. Call Support to report it.');
+    await this.channel?.send({ content: this.message || 'An error occurred. Call Support to report it.' });
   }
 }
 
