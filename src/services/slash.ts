@@ -3,6 +3,7 @@ import {
   SlashCommandBooleanOption,
   SlashCommandBuilder,
   SlashCommandChannelOption,
+  SlashCommandIntegerOption,
   SlashCommandMentionableOption,
   SlashCommandNumberOption,
   SlashCommandRoleOption,
@@ -67,6 +68,9 @@ function parseCommand(command: ICommand): unknown {
       case 'NUMBER':
         subCommandRef?.addNumberOption(assign(new SlashCommandNumberOption(), option));
         break;
+      case 'INTEGER':
+        subCommandRef?.addIntegerOption(assign(new SlashCommandIntegerOption(), option));
+        break;
       case 'STRING':
         subCommandRef?.addStringOption(assign(new SlashCommandStringOption(), option));
         break;
@@ -105,8 +109,8 @@ async function setSlashCommands(applicationId: string, commands: ICommand[], gui
     return parseCommand(command);
   });
   const mergedSlashCommands = recursiveMergeArrayBy(slashCommandsJSON, 'name');
-  const response = await registerCommands(applicationId, mergedSlashCommands, guildId);
-  logger.info(`Successfully reloaded application (/) commands for guild ${guildId || 'Global'}`, response);
+  await registerCommands(applicationId, mergedSlashCommands, guildId);
+  logger.info(`Successfully reloaded application (/) commands for guild ${guildId || 'Global'}`);
 }
 
 export { registerCommands, parseCommand, setSlashCommands };
