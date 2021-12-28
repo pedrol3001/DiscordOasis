@@ -7,8 +7,8 @@ import { IMicroHandler } from '../IMicroHandler';
 class PluginsMicroHandler implements IMicroHandler {
   async handle(cmd: Message | CommandInteraction) {
     // plugins handler
-    if (!cmd.guild || !has(cmd.command, 'pluginId')) return;
-    const pluginId = get(cmd.command, 'pluginId');
+    if (!cmd.guild || !has(cmd.commandHolder, 'pluginId')) return;
+    const pluginId = get(cmd.commandHolder, 'pluginId');
     const hasPlugin = await CheckGuildsPluginController.handle([cmd.guild?.id], pluginId);
 
     if (!hasPlugin) {

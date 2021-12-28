@@ -1,6 +1,6 @@
 import { ClientApplication, Collection, CommandInteraction, Interaction, Message } from 'discord.js';
 
-import { assign, get, set } from 'lodash';
+import { get } from 'lodash';
 import { ICommand } from '../../interfaces/ICommand';
 import { OasisError } from '../../error/OasisError';
 
@@ -81,13 +81,13 @@ class CommandHandler implements ICommandHandler {
     }
 
     this.setArgs(cmd);
-    this.setCommand(cmd);
+    this.setCommandHandler(cmd);
     this.setManager(cmd, pluginsHandler);
     await this.executeHandler(cmd);
   }
 
   private async executeHandler(cmd: Message | CommandInteraction) {
-    if (!cmd.command) return;
+    if (!cmd.commandHolder) return;
 
     try {
       for (const handler of this.onBeginMicroHandlers) {
@@ -102,7 +102,7 @@ class CommandHandler implements ICommandHandler {
         await handler.handle(cmd);
       }
 
-      await cmd.command.execute(cmd);
+      await cmd.commandHolder.execute(cmd);
     } catch (err) {
       if (!(err instanceof CommandError)) {
         throw new OasisError('Error executing command', {
@@ -147,19 +147,18 @@ class CommandHandler implements ICommandHandler {
     }
   }
 
-  private setCommand(msg: Message | CommandInteraction) {
+  private setCommandHandler(msg: Message | CommandInteraction) {
     const commandMsg = new Array<string>();
-    while (!msg.command && msg.args.length > 0) {
+    while (!msg.commandHolder && msg.args.length > 0) {
       commandMsg.push(msg.args.shift()?.toLowerCase() || '');
-      const commandByName = this._commands.get(commandMsg.join(' '));
-      const commandByAliases = this._commands.find((cmd) => cmd.aliases?.includes(commandMsg.join(' ')));
-      const command = commandByName || commandByAliases;
-      if (command) assign(msg.command, command);
+      const commandByName = this._commands.get(commandMsg.join(' ')) || null;
+      const commandByAliases = this._commands.find((cmd) => cmd.aliases?.includes(commandMsg.join(' '))) || null;
+      msg.commandHolder = commandByName || commandByAliases;
     }
   }
 
   private setManager(cmd: Message | CommandInteraction, pluginsHandler: IPluginsHandler) {
-    const pluginId = get(cmd.command, 'pluginId');
+    const pluginId = get(cmd.commandHolder, 'pluginId');
     cmd.manager = pluginId ? pluginsHandler.plugins.get(pluginId) || null : null;
   }
 }
