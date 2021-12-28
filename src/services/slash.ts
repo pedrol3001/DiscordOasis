@@ -14,22 +14,16 @@ function parseCommand(command: ICommand): unknown {
   commandData.setDescription(command.description);
 
   if (subCommandGroupName && subCommandName) {
-    commandData.addSubcommandGroup((subCommandGroup) => {
-      subCommandGroup.setName(subCommandGroupName);
-      subCommandGroup.setDescription(command.description);
-      subCommandGroup.addSubcommand((subCommand) => {
-        subCommand.setName(subCommandName);
-        subCommand.setDescription(command.description);
-        return subCommand;
-      });
-      return subCommandGroup;
-    });
+    commandData.addSubcommandGroup((subCommandGroup) =>
+      subCommandGroup
+        .setName(subCommandGroupName)
+        .setDescription(command.description)
+        .addSubcommand((subCommand) => subCommand.setName(subCommandName).setDescription(command.description)),
+    );
   } else if (subCommandGroupName) {
-    commandData.addSubcommand((subCommand) => {
-      subCommand.setName(subCommandGroupName);
-      subCommand.setDescription(command.description);
-      return subCommand;
-    });
+    commandData.addSubcommand((subCommand) =>
+      subCommand.setName(subCommandGroupName).setDescription(command.description),
+    );
   } else {
     Object.assign(commandData.options, ...command.options);
   }
