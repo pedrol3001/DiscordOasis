@@ -2,11 +2,17 @@ import { Message, BitFieldResolvable, PermissionString, Interaction, Application
 
 export type ICommandGroups = 'guildOnly' | 'global' | 'dmOnly';
 
+export interface ICommandDescription {
+  command: string;
+  subCommand?: string;
+  subCommandGroup?: string;
+}
+
 export interface ICommand {
   name: string;
   group: ICommandGroups;
   aliases: Array<string>;
-  description: string;
+  description: ICommandDescription;
   options: ApplicationCommandOption[];
   cooldown?: number;
   rolesList?: Array<string>;

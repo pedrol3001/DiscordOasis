@@ -35,9 +35,13 @@ function parseCommand(command: ICommand): RESTPostAPIApplicationCommandsJSONBody
   const fullSplittedCommandName = command.name.split(' ');
   const [commandName, subCommandGroupName, subCommandName] = fullSplittedCommandName;
 
+  const commandDescription = command.description.command;
+  const subCommandGroupDescription = command.description?.subCommandGroup || commandDescription;
+  const subCommandDescription = command.description?.subCommand || subCommandGroupDescription || commandDescription;
+
   const commandData = new SlashCommandBuilder();
   commandData.setName(commandName);
-  commandData.setDescription(command.description);
+  commandData.setDescription(commandDescription);
 
   let subCommandRef: SlashCommandBuilder | SlashCommandSubcommandBuilder | null = null;
 
@@ -45,16 +49,16 @@ function parseCommand(command: ICommand): RESTPostAPIApplicationCommandsJSONBody
     commandData.addSubcommandGroup((subCommandGroup) =>
       subCommandGroup
         .setName(subCommandGroupName)
-        .setDescription(command.description)
+        .setDescription(subCommandGroupDescription)
         .addSubcommand((subCommand) => {
-          subCommand.setName(subCommandName).setDescription(command.description);
+          subCommand.setName(subCommandName).setDescription(subCommandDescription);
           subCommandRef = subCommand;
           return subCommand;
         }),
     );
   } else if (subCommandGroupName) {
     commandData.addSubcommand((subCommand) => {
-      subCommand.setName(subCommandGroupName).setDescription(command.description);
+      subCommand.setName(subCommandGroupName).setDescription(subCommandDescription);
       subCommandRef = subCommand;
       return subCommand;
     });
