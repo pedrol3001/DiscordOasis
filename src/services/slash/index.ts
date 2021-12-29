@@ -1,23 +1,14 @@
-import { Routes } from 'discord-api-types/v9';
-import {
-  SlashCommandBooleanOption,
-  SlashCommandBuilder,
-  SlashCommandChannelOption,
-  SlashCommandIntegerOption,
-  SlashCommandMentionableOption,
-  SlashCommandNumberOption,
-  SlashCommandRoleOption,
-  SlashCommandStringOption,
-  SlashCommandSubcommandBuilder,
-  SlashCommandUserOption,
-} from '@discordjs/builders';
+import { RESTPostAPIApplicationCommandsJSONBody, Routes } from 'discord-api-types/v9';
+import { SlashCommandBuilder, SlashCommandSubcommandBuilder } from '@discordjs/builders';
 import _, { assign } from 'lodash';
-import { ICommand } from '../interfaces/ICommand';
-import { discordRest } from './rest';
-import logger from '../services/logger';
-import { OasisError } from '..';
+import { ApplicationCommandOption } from 'discord.js';
+import { ICommand } from '../../interfaces/ICommand';
+import { discordRest } from '../rest';
+import logger from '../logger';
+import { optionsMapper } from './options';
+import { OasisError } from '../../error/OasisError';
 
-function recursiveMergeArrayBy(array: Array<unknown>, attribute: string) {
+function recursiveMergeArrayBy(array: RESTPostAPIApplicationCommandsJSONBody[], attribute: string) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return _.uniqWith(array, (pre: any, cur: any) => {
     if (pre[attribute] === cur[attribute]) {
@@ -29,7 +20,18 @@ function recursiveMergeArrayBy(array: Array<unknown>, attribute: string) {
   });
 }
 
-function parseCommand(command: ICommand): unknown {
+function addOptions(
+  subCommandRef: SlashCommandBuilder | SlashCommandSubcommandBuilder,
+  options: ApplicationCommandOption[],
+) {
+  options.forEach((option: ApplicationCommandOption) => {
+    const { type, ...optionsAttributes } = option;
+    const mapper = optionsMapper(subCommandRef);
+    mapper[type].addOption(assign(new mapper.BOOLEAN.OptionBuild(), optionsAttributes));
+  });
+}
+
+function parseCommand(command: ICommand): RESTPostAPIApplicationCommandsJSONBody {
   const fullSplittedCommandName = command.name.split(' ');
   const [commandName, subCommandGroupName, subCommandName] = fullSplittedCommandName;
 
@@ -60,45 +62,18 @@ function parseCommand(command: ICommand): unknown {
     subCommandRef = commandData;
   }
 
-  command.options.forEach((option) => {
-    if (!subCommandRef) throw new OasisError('Unknown error reading the command');
+  if (!subCommandRef) throw new OasisError('Unknown error reading the command');
 
-    const { type, ...optionsAttributes } = option;
+  addOptions(subCommandRef, command.options);
 
-    switch (type) {
-      case 'BOOLEAN':
-        subCommandRef.addBooleanOption(assign(new SlashCommandBooleanOption(), optionsAttributes));
-        break;
-      case 'NUMBER':
-        subCommandRef.addNumberOption(assign(new SlashCommandNumberOption(), optionsAttributes));
-        break;
-      case 'INTEGER':
-        subCommandRef.addIntegerOption(assign(new SlashCommandIntegerOption(), optionsAttributes));
-        break;
-      case 'STRING':
-        subCommandRef.addStringOption(assign(new SlashCommandStringOption(), optionsAttributes));
-        break;
-      case 'MENTIONABLE':
-        subCommandRef.addMentionableOption(assign(new SlashCommandMentionableOption(), optionsAttributes));
-        break;
-      case 'USER':
-        subCommandRef.addUserOption(assign(new SlashCommandUserOption(), optionsAttributes));
-        break;
-      case 'CHANNEL':
-        subCommandRef.addChannelOption(assign(new SlashCommandChannelOption(), optionsAttributes));
-        break;
-      case 'ROLE':
-        subCommandRef.addRoleOption(assign(new SlashCommandRoleOption(), optionsAttributes));
-        break;
-      default:
-        throw new OasisError('Argument type not supported');
-    }
-  });
-
-  return commandData.toJSON();
+  return commandData.toJSON() as RESTPostAPIApplicationCommandsJSONBody;
 }
 
-async function registerCommands(clientId: string, commands: unknown, guildId?: string) {
+async function registerCommands(
+  clientId: string,
+  commands: RESTPostAPIApplicationCommandsJSONBody[],
+  guildId?: string,
+) {
   try {
     const routes =
       guildId === undefined ? Routes.applicationCommands(clientId) : Routes.applicationGuildCommands(clientId, guildId);
