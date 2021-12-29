@@ -141,6 +141,14 @@ class CommandHandler implements ICommandHandler {
       if (subCommand) {
         cmd.args.push(subCommand);
       }
+
+      const optionsArgs = get(cmd.options, '_hoistedOptions');
+
+      const valueMappedArgs = optionsArgs.map((option: any) => {
+        return option.value;
+      });
+
+      cmd.args.push(...valueMappedArgs);
     } else {
       const command = cmd.content.slice(cmd.prefix.length);
       cmd.args = command.trim().split(/\s+/);
