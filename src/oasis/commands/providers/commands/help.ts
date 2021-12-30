@@ -16,7 +16,7 @@ const command: ICommand = {
   async execute(msg: Message): Promise<void> {
     const dmChannel = await msg.author.createDM();
     const commandHandler = get(msg.client, 'commandHandler') as ICommandHandler;
-    const pluginHandler = get(msg.client, 'pluginHandler') as IPluginsHandler;
+    const pluginsHandler = get(msg.client, 'pluginsHandler') as IPluginsHandler;
 
     const pluginGroupedCommands = groupBy(commandHandler.commands, (cmd) => {
       return get(cmd, 'pluginId', null);
@@ -30,12 +30,10 @@ const command: ICommand = {
       let title = 'Default';
       let color = '#0099ff';
 
-      if (pluginId !== 'null') {
-        const plugin = pluginHandler.plugins.get(pluginId);
-        if (plugin) {
-          title = plugin.name;
-          color = plugin.color;
-        }
+      const plugin = pluginsHandler.plugins.get(pluginId);
+      if (plugin) {
+        title = plugin.name;
+        color = plugin.color;
       }
 
       const embed = new MessageEmbed()
