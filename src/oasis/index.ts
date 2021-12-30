@@ -15,7 +15,7 @@ import { IPluginsHandler } from './plugins/IPluginsHandler';
 import { LoadGuildsController } from '../repositories/guild/useCases/LoadGuilds/LoadGuildsController';
 import { CreateGuildController } from '../repositories/guild/useCases/CreateGuild/CreateGuildController';
 import { ICommandHandler } from './commands/ICommandHandler';
-import { setSlashCommands } from '../services/slash';
+import { SlashCommands } from '../services/slash';
 
 class Oasis extends Client {
   readonly commandHandler: ICommandHandler;
@@ -62,7 +62,7 @@ class Oasis extends Client {
     if (!this.application) {
       throw new OasisError('Application is invalid');
     }
-    await setSlashCommands(this.application.id, commands);
+    await SlashCommands.setCommands(this.application.id, commands);
   }
 
   private setDefaultCallbacks(): void {

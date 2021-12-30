@@ -9,6 +9,7 @@ import { ICommandHandler } from './ICommandHandler';
 import { IAddCommands } from './providers/AddCommands/IAddCommands';
 import { IRemoveCommands } from './providers/RemoveCommands/IRemoveCommands';
 import { AddCommandsFromFolder } from './providers/AddCommands/implementations/AddCommandsFromFolder';
+import { AddDefaultCommands } from './providers/AddCommands/implementations/AddDefaultCommands';
 import { IMicroHandler } from './handlers/IMicroHandler';
 import { GroupsMicroHandler } from './handlers/implementations/GroupsMicroHandler';
 import { OptionsMicroHandler } from './handlers/implementations/OptionsMicroHandler';
@@ -48,8 +49,8 @@ class CommandHandler implements ICommandHandler {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async setup(_application: ClientApplication) {
+    await this.edit(AddDefaultCommands);
     await this.edit(AddCommandsFromFolder, this.commandsFolder);
-    // setSlashCommands(application.id, this.commands);
   }
 
   public addMicroHandler(handler: IMicroHandler, onBegin: IMicroHandlerExecutionMode = 'async') {
