@@ -10,41 +10,42 @@ import {
   SlashCommandSubcommandBuilder,
   SlashCommandUserOption,
 } from '@discordjs/builders';
+import { assign } from 'lodash';
 
 export function optionsMapper(subCommandRef: SlashCommandBuilder | SlashCommandSubcommandBuilder) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const optionMapper: Record<string, any> = {
     BOOLEAN: {
-      addOption: subCommandRef.addBooleanOption,
-      OptionBuild: SlashCommandBooleanOption,
+      addOption: (optionsAttributes: unknown) =>
+        subCommandRef.addBooleanOption(assign(new SlashCommandBooleanOption(), optionsAttributes)),
     },
     NUMBER: {
-      addOption: subCommandRef.addNumberOption,
-      OptionBuild: SlashCommandNumberOption,
+      addOption: (optionsAttributes: unknown) =>
+        subCommandRef.addNumberOption(assign(new SlashCommandNumberOption(), optionsAttributes)),
     },
     INTEGER: {
-      addOption: subCommandRef.addIntegerOption,
-      OptionBuild: SlashCommandIntegerOption,
+      addOption: (optionsAttributes: unknown) =>
+        subCommandRef.addIntegerOption(assign(new SlashCommandIntegerOption(), optionsAttributes)),
     },
     STRING: {
-      addOption: subCommandRef.addStringOption,
-      OptionBuild: SlashCommandStringOption,
+      addOption: (optionsAttributes: unknown) =>
+        subCommandRef.addStringOption(assign(new SlashCommandStringOption(), optionsAttributes)),
     },
     MENTIONABLE: {
-      addOption: subCommandRef.addMentionableOption,
-      OptionBuild: SlashCommandMentionableOption,
+      addOption: (optionsAttributes: unknown) =>
+        subCommandRef.addMentionableOption(assign(new SlashCommandMentionableOption(), optionsAttributes)),
     },
     USER: {
-      addOption: subCommandRef.addUserOption,
-      OptionBuild: SlashCommandUserOption,
+      addOption: (optionsAttributes: unknown) =>
+        subCommandRef.addUserOption(assign(new SlashCommandUserOption(), optionsAttributes)),
     },
     CHANNEL: {
-      addOption: subCommandRef.addChannelOption,
-      OptionBuild: SlashCommandChannelOption,
+      addOption: (optionsAttributes: unknown) =>
+        subCommandRef.addChannelOption(assign(new SlashCommandChannelOption(), optionsAttributes)),
     },
     ROLE: {
-      addOption: subCommandRef.addRoleOption,
-      OptionBuild: SlashCommandRoleOption,
+      addOption: (optionsAttributes: unknown) =>
+        subCommandRef.addRoleOption(assign(new SlashCommandRoleOption(), optionsAttributes)),
     },
   };
   return optionMapper;

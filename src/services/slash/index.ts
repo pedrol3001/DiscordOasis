@@ -1,6 +1,6 @@
 import { RESTPostAPIApplicationCommandsJSONBody, Routes } from 'discord-api-types/v9';
 import { SlashCommandBuilder, SlashCommandSubcommandBuilder } from '@discordjs/builders';
-import _, { assign } from 'lodash';
+import { uniqWith } from 'lodash';
 import { ApplicationCommandOption } from 'discord.js';
 import { ICommand } from '../../interfaces/ICommand';
 import { discordRest } from '../rest';
@@ -10,7 +10,7 @@ import { OasisError } from '../../error/OasisError';
 
 function recursiveMergeArrayBy(array: RESTPostAPIApplicationCommandsJSONBody[], attribute: string) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return _.uniqWith(array, (pre: any, cur: any) => {
+  return uniqWith(array, (pre: any, cur: any) => {
     if (pre[attribute] === cur[attribute]) {
       const mergedOptions = cur.options.concat(pre.options);
       cur.options = recursiveMergeArrayBy(mergedOptions, attribute);
@@ -27,7 +27,7 @@ function addOptions(
   options.forEach((option: ApplicationCommandOption) => {
     const { type, ...optionsAttributes } = option;
     const mapper = optionsMapper(subCommandRef);
-    mapper[type].addOption(assign(new mapper.BOOLEAN.OptionBuild(), optionsAttributes));
+    mapper[type].addOption(optionsAttributes);
   });
 }
 
