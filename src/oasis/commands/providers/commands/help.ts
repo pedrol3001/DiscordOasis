@@ -64,6 +64,8 @@ const command: ICommand = {
     } else {
       await dmChannel.send({ content: `Channel not supported: ${msg.channel?.type}` });
     }
+
+    msg.reply({ content: 'Help commands sent to your dm' });
   },
 };
 
