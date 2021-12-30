@@ -2,8 +2,7 @@ import { Collection } from 'discord.js';
 import { AbstractPlugin } from './class/AbstractPlugin';
 import { ICommandHandler } from '../commands/ICommandHandler';
 import { IPluginsHandler } from './IPluginsHandler';
-import { GetPluginByNameController } from '../../repositories/plugin/useCases/GetPluginByName/GetPluginByNameController';
-import { CreatePluginController } from '../../repositories/plugin/useCases/CreatePlugin/CreatePluginController';
+import { OasisError } from '../../error/OasisError';
 
 class PluginsHandler implements IPluginsHandler {
   private _plugins: Collection<string, AbstractPlugin> = new Collection<string, AbstractPlugin>();
@@ -22,12 +21,12 @@ class PluginsHandler implements IPluginsHandler {
     await Promise.all(
       this._plugins.map(async (plugin: AbstractPlugin, pluginName: string) => {
         if (!plugin) return;
-        const oldPlugin = await GetPluginByNameController.handle(pluginName);
-        const pluginDb = oldPlugin || (await CreatePluginController.handle({ name: pluginName }));
-        await plugin.setup(pluginDb.id);
+
+        await plugin.setup();
         await plugin.set(commandHandler);
 
-        this.pluginsNameToId(pluginDb.id, pluginName, plugin);
+        if (plugin.id) this.pluginsNameToId(plugin.id, pluginName, plugin);
+        else throw new OasisError(`Failed to load plugin ${pluginName}, it has no id`);
       }),
     );
   }

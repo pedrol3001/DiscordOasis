@@ -20,5 +20,6 @@ model Guild {
 model Plugin {
   id    String @id @unique
   name  String @unique
+  color String
   guilds Guild[]
 }

@@ -1,13 +1,12 @@
-import { Plugin } from '@prisma/client';
+import { Plugin, Guild as DbGuild } from '@prisma/client';
 import { ICommand } from '../../interfaces/ICommand';
 import { AbstractPlugin } from '../../oasis/plugins/class/AbstractPlugin';
 
 declare module 'discord.js' {
-  export interface Guild {
+  export interface Guild extends DbGuild {
     prefix: string;
     plugins: Plugin[];
   }
-
   export interface Message {
     prefix: string;
     manager: AbstractPlugin | null;
