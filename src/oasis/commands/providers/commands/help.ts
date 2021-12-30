@@ -1,4 +1,4 @@
-import { ColorResolvable, Message, MessageEmbed } from 'discord.js';
+import { ColorResolvable, CommandInteraction, Message, MessageEmbed } from 'discord.js';
 import { get, groupBy } from 'lodash';
 import { ICommand } from '../../../../interfaces/ICommand';
 import { IPluginsHandler } from '../../../plugins/IPluginsHandler';
@@ -9,12 +9,14 @@ const command: ICommand = {
   aliases: ['h'],
   options: [{ type: 'STRING', name: 'plugin', description: 'Name of the plugin', required: false }],
   description: {
-    command: 'Show all server or plugin specific commands',
+    command: 'Show server or plugin specific commands',
   },
   group: 'global',
 
-  async execute(msg: Message): Promise<void> {
-    const dmChannel = await msg.author.createDM();
+  async execute(msg: Message | CommandInteraction): Promise<void> {
+    const author = msg instanceof CommandInteraction ? msg.user : msg.author;
+    const dmChannel = await author.createDM();
+
     const commandHandler = get(msg.client, 'commandHandler') as ICommandHandler;
     const pluginsHandler = get(msg.client, 'pluginsHandler') as IPluginsHandler;
 
@@ -49,10 +51,10 @@ const command: ICommand = {
       return embed;
     });
 
-    if (msg.channel.type === 'DM') {
+    if (msg.channel?.type === 'DM') {
       await dmChannel.send({ embeds: [...commandsEmbed] });
     }
-    if (msg.channel.type === 'GUILD_TEXT') {
+    if (msg.channel?.type === 'GUILD_TEXT') {
       const filteredEmbeds = commandsEmbed.filter((embed) => {
         return (
           embed.title === 'Default' ||
@@ -61,7 +63,7 @@ const command: ICommand = {
       });
       await dmChannel.send({ embeds: [...filteredEmbeds] });
     } else {
-      await dmChannel.send({ content: 'Channel not supported' });
+      await dmChannel.send({ content: `Channel not supported: ${msg.channel?.type}` });
     }
   },
 };
