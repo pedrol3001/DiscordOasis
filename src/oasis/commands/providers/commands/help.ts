@@ -53,8 +53,7 @@ const command: ICommand = {
 
     if (msg.channel?.type === 'DM') {
       await dmChannel.send({ embeds: [...commandsEmbed] });
-    }
-    if (msg.channel?.type === 'GUILD_TEXT') {
+    } else if (msg.channel?.type === 'GUILD_TEXT') {
       const filteredEmbeds = commandsEmbed.filter((embed) => {
         return (
           embed.title === 'Default' ||
