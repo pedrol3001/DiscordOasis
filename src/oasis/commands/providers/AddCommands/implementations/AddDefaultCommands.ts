@@ -4,16 +4,14 @@
 
 import { Collection } from 'discord.js';
 import { ICommand } from '../../../../../interfaces/ICommand';
-import help from '../../commands/help';
+import defaultCommands from '../../commands';
 import { IAddCommands } from '../IAddCommands';
 import { OasisError } from '../../../../../error/OasisError';
 
 class AddDefaultCommands implements IAddCommands {
   public handle(collection: Collection<string, ICommand>): void {
-    const commands = [help];
-
     try {
-      commands.forEach((command) => {
+      defaultCommands.forEach((command) => {
         const alreadyExists = collection.get(command.name);
 
         if (alreadyExists) {
