@@ -54,7 +54,10 @@ const command: ICommand = {
     }
     if (msg.channel.type === 'GUILD_TEXT') {
       const filteredEmbeds = commandsEmbed.filter((embed) => {
-        return msg.client.guilds.cache.some((guild) => guild.plugins.some((plugin) => plugin.name === embed.title));
+        return (
+          embed.title === 'Default' ||
+          msg.client.guilds.cache.some((guild) => guild.plugins.some((plugin) => plugin.name === embed.title))
+        );
       });
       await dmChannel.send({ embeds: [...filteredEmbeds] });
     } else {
