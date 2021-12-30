@@ -11,6 +11,7 @@ import { IRemoveCommands } from './providers/RemoveCommands/IRemoveCommands';
 import { AddCommandsFromFolder } from './providers/AddCommands/implementations/AddCommandsFromFolder';
 import { IMicroHandler } from './handlers/IMicroHandler';
 import { GroupsMicroHandler } from './handlers/implementations/GroupsMicroHandler';
+import { OptionsMicroHandler } from './handlers/implementations/OptionsMicroHandler';
 import { PermissionsMicroHandler } from './handlers/implementations/PermissionsMicroHandler';
 import { RolesMicroHandler } from './handlers/implementations/RolesMicroHandler';
 import { CooldownsMicroHandler } from './handlers/implementations/CooldownsMicroHandler';
@@ -42,7 +43,7 @@ class CommandHandler implements ICommandHandler {
     this.microHandlers = [new GroupsMicroHandler(), new PermissionsMicroHandler(), new RolesMicroHandler()];
 
     this.onBeginMicroHandlers = [new PluginsMicroHandler(), new CooldownsMicroHandler()];
-    this.onEndMicroHandlers = [];
+    this.onEndMicroHandlers = [new OptionsMicroHandler()];
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
