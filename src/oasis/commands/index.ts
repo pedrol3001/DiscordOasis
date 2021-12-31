@@ -19,7 +19,7 @@ import { AddCommandsFromFolder } from './providers/AddCommands/implementations/A
 import { AddDefaultCommands } from './providers/AddCommands/implementations/AddDefaultCommands';
 import { IValidator } from './validators/IValidator';
 import { GroupsValidator } from './validators/implementations/GroupsValidator';
-import { OptionsValidator } from './validators/implementations/OptionsValidator';
+import { ArgsValidator } from './validators/implementations/ArgsValidator';
 import { PermissionsValidator } from './validators/implementations/PermissionsValidator';
 import { RolesValidator } from './validators/implementations/RolesValidator';
 import { CooldownsValidator } from './validators/implementations/CooldownsValidator';
@@ -51,7 +51,7 @@ class CommandHandler implements ICommandHandler {
     this.validators = [new GroupsValidator(), new PermissionsValidator(), new RolesValidator()];
 
     this.onBeginValidators = [new PluginsValidator(), new CooldownsValidator()];
-    this.onEndValidators = [new OptionsValidator()];
+    this.onEndValidators = [new ArgsValidator()];
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

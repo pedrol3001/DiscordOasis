@@ -17,5 +17,6 @@
     "moduleResolution": "node",
     "importHelpers": true
   },
-  "include": ["../src/"],
+  "include": ["../src/**/*.ts"],
+  "exclude": ["../src/**/*.spec.ts"]
 }
