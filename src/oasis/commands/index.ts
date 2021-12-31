@@ -17,16 +17,16 @@ import { IAddCommands } from './providers/AddCommands/IAddCommands';
 import { IRemoveCommands } from './providers/RemoveCommands/IRemoveCommands';
 import { AddCommandsFromFolder } from './providers/AddCommands/implementations/AddCommandsFromFolder';
 import { AddDefaultCommands } from './providers/AddCommands/implementations/AddDefaultCommands';
-import { IMicroHandler } from './handlers/IMicroHandler';
-import { GroupsMicroHandler } from './handlers/implementations/GroupsMicroHandler';
-import { OptionsMicroHandler } from './handlers/implementations/OptionsMicroHandler';
-import { PermissionsMicroHandler } from './handlers/implementations/PermissionsMicroHandler';
-import { RolesMicroHandler } from './handlers/implementations/RolesMicroHandler';
-import { CooldownsMicroHandler } from './handlers/implementations/CooldownsMicroHandler';
+import { IValidator } from './validators/IValidator';
+import { GroupsValidator } from './validators/implementations/GroupsValidator';
+import { OptionsValidator } from './validators/implementations/OptionsValidator';
+import { PermissionsValidator } from './validators/implementations/PermissionsValidator';
+import { RolesValidator } from './validators/implementations/RolesValidator';
+import { CooldownsValidator } from './validators/implementations/CooldownsValidator';
 import { IPluginsHandler } from '../plugins/IPluginsHandler';
-import { PluginsMicroHandler } from './handlers/implementations/PluginsMicroHandler';
+import { PluginsValidator } from './validators/implementations/PluginsValidator';
 
-export type IMicroHandlerExecutionMode = 'onBegin' | 'async' | 'onEnd';
+export type IValidatorExecutionMode = 'onBegin' | 'async' | 'onEnd';
 
 class CommandHandler implements ICommandHandler {
   private _commands: Collection<string, ICommand> = new Collection<string, ICommand>();
@@ -35,11 +35,11 @@ class CommandHandler implements ICommandHandler {
 
   private readonly commandsFolder: string;
 
-  private onBeginMicroHandlers: IMicroHandler[];
+  private onBeginValidators: IValidator[];
 
-  private microHandlers: IMicroHandler[];
+  private validators: IValidator[];
 
-  private onEndMicroHandlers: IMicroHandler[];
+  private onEndValidators: IValidator[];
 
   public get commands(): Array<ICommand> {
     return Array.from(this._commands.values());
@@ -48,10 +48,10 @@ class CommandHandler implements ICommandHandler {
   public constructor(commandsFolder: string, globalPrefix: string) {
     this.commandsFolder = commandsFolder;
     this.globalPrefix = globalPrefix;
-    this.microHandlers = [new GroupsMicroHandler(), new PermissionsMicroHandler(), new RolesMicroHandler()];
+    this.validators = [new GroupsValidator(), new PermissionsValidator(), new RolesValidator()];
 
-    this.onBeginMicroHandlers = [new PluginsMicroHandler(), new CooldownsMicroHandler()];
-    this.onEndMicroHandlers = [new OptionsMicroHandler()];
+    this.onBeginValidators = [new PluginsValidator(), new CooldownsValidator()];
+    this.onEndValidators = [new OptionsValidator()];
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -83,16 +83,16 @@ class CommandHandler implements ICommandHandler {
     if (!cmd.commandHolder) return;
 
     try {
-      for (const handler of this.onBeginMicroHandlers) {
+      for (const validator of this.onBeginValidators) {
         // eslint-disable-next-line no-await-in-loop
-        await handler.handle(cmd);
+        await validator.validate(cmd);
       }
 
-      await Promise.all(this.microHandlers.map(async (handler) => handler.handle(cmd)));
+      await Promise.all(this.validators.map(async (validator) => validator.validate(cmd)));
 
-      for (const handler of this.onEndMicroHandlers) {
+      for (const validator of this.onEndValidators) {
         // eslint-disable-next-line no-await-in-loop
-        await handler.handle(cmd);
+        await validator.validate(cmd);
       }
 
       await cmd.commandHolder.execute(cmd);

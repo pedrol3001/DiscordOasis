@@ -1,9 +1,9 @@
 import { CommandInteraction, Message } from 'discord.js';
-import { CommandError } from '../../../commands/error/CommandError';
-import { IMicroHandler } from '../IMicroHandler';
+import { CommandError } from '../../error/CommandError';
+import { IValidator } from '../IValidator';
 
-class RolesMicroHandler implements IMicroHandler {
-  async handle(cmd: Message | CommandInteraction) {
+class RolesValidator implements IValidator {
+  async validate(cmd: Message | CommandInteraction) {
     // roles handler
     if (!cmd.guild || !cmd.member || !cmd.commandHolder?.rolesList) return;
 
@@ -23,4 +23,4 @@ class RolesMicroHandler implements IMicroHandler {
   }
 }
 
-export { RolesMicroHandler };
+export { RolesValidator };
