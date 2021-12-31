@@ -60,22 +60,6 @@ class CommandHandler implements ICommandHandler {
     await this.edit(AddCommandsFromFolder, this.commandsFolder);
   }
 
-  public addMicroHandler(handler: IMicroHandler, onBegin: IMicroHandlerExecutionMode = 'async') {
-    switch (onBegin) {
-      case 'onBegin':
-        this.onBeginMicroHandlers.push(handler);
-        break;
-      case 'async':
-        this.microHandlers.push(handler);
-        break;
-      case 'onEnd':
-        this.onEndMicroHandlers.push(handler);
-        break;
-      default:
-        throw new OasisError('Invalid micro handler execution mode');
-    }
-  }
-
   public async edit(ConfType: new () => IAddCommands | IRemoveCommands, ...args: string[]) {
     const provider = new ConfType();
     await provider.handle(this._commands, ...args);
