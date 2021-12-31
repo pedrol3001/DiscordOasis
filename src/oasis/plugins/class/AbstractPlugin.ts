@@ -24,7 +24,7 @@ abstract class AbstractPlugin implements Plugin {
 
   async setup(): Promise<void> {
     const oldPlugin = await GetPluginByNameController.handle(this.name);
-    const pluginDb = oldPlugin || (await CreatePluginController.handle(this));
+    const pluginDb = oldPlugin ?? (await CreatePluginController.handle(this));
     this.id = pluginDb.id;
   }
 

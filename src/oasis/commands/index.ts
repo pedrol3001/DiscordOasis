@@ -169,16 +169,17 @@ class CommandHandler implements ICommandHandler {
   private setCommandHandler(msg: Message | CommandInteraction) {
     const commandMsg = new Array<string>();
     while (!msg.commandHolder && msg.args.length > 0) {
-      commandMsg.push(msg.args.shift()?.toLowerCase() || '');
-      const commandByName = this._commands.get(commandMsg.join(' ')) || null;
-      const commandByAliases = this._commands.find((cmd) => cmd.aliases?.includes(commandMsg.join(' '))) || null;
-      msg.commandHolder = commandByName || commandByAliases;
+      const nextArg = msg.args.shift() as string;
+      commandMsg.push(nextArg.toLowerCase());
+      const commandByName = this._commands.get(commandMsg.join(' '));
+      const commandByAliases = this._commands.find((cmd) => cmd.aliases?.includes(commandMsg.join(' ')));
+      msg.commandHolder = commandByName ?? commandByAliases ?? null;
     }
   }
 
   private setManager(cmd: Message | CommandInteraction, pluginsHandler: IPluginsHandler) {
     const pluginId = get(cmd.commandHolder, 'pluginId');
-    cmd.manager = pluginId ? pluginsHandler.plugins.get(pluginId) || null : null;
+    cmd.manager = (pluginId ? pluginsHandler.plugins.get(pluginId) : undefined) ?? null;
   }
 }
 export default CommandHandler;

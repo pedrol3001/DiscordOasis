@@ -27,7 +27,7 @@ class Oasis extends Client {
     const { plugins, commandsFolder, globalPrefix, loggerTransports } = options;
 
     this.commandHandler = new CommandHandler(commandsFolder, globalPrefix);
-    this.pluginsHandler = new PluginsHandler(plugins || []);
+    this.pluginsHandler = new PluginsHandler(plugins ?? []);
 
     this.setDefaultCallbacks();
     this.setLogTransports(loggerTransports);
