@@ -1,15 +1,15 @@
 import { Collection, CommandInteraction, Message, User } from 'discord.js';
-import { CommandError } from '../../../commands/error/CommandError';
-import { IMicroHandler } from '../IMicroHandler';
+import { CommandError } from '../../error/CommandError';
+import { IValidator } from '../IValidator';
 
-class CooldownsMicroHandler implements IMicroHandler {
+class CooldownsValidator implements IValidator {
   private cooldowns: Collection<string, Collection<string, number>>;
 
   constructor() {
     this.cooldowns = new Collection<string, Collection<string, number>>();
   }
 
-  async handle(cmd: Message | CommandInteraction) {
+  async validate(cmd: Message | CommandInteraction) {
     if (!cmd.commandHolder) return;
 
     if (!this.cooldowns.has(cmd.commandHolder.name)) {
@@ -42,4 +42,4 @@ class CooldownsMicroHandler implements IMicroHandler {
   }
 }
 
-export { CooldownsMicroHandler };
+export { CooldownsValidator };

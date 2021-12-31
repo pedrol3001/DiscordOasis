@@ -2,10 +2,10 @@ import { CommandInteraction, Message } from 'discord.js';
 import { has, get } from 'lodash';
 import { CheckGuildsPluginController } from '../../../../repositories/guild/useCases/CheckGuildsPlugin/CheckGuildsPluginController';
 import { CommandError } from '../../error/CommandError';
-import { IMicroHandler } from '../IMicroHandler';
+import { IValidator } from '../IValidator';
 
-class PluginsMicroHandler implements IMicroHandler {
-  async handle(cmd: Message | CommandInteraction) {
+class PluginsValidator implements IValidator {
+  async validate(cmd: Message | CommandInteraction) {
     // plugins handler
     if (!cmd.guild || !has(cmd.commandHolder, 'pluginId')) return;
     const pluginId = get(cmd.commandHolder, 'pluginId');
@@ -18,4 +18,4 @@ class PluginsMicroHandler implements IMicroHandler {
   }
 }
 
-export { PluginsMicroHandler };
+export { PluginsValidator };
