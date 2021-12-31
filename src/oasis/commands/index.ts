@@ -136,7 +136,14 @@ class CommandHandler implements ICommandHandler {
         cmd.args.push(subCommand);
       }
 
-      const optionsArgs = get(cmd.options, '_hoistedOptions') as Array<CommandInteractionOption>;
+      const optionsArgs = get(cmd.options, '_hoistedOptions') as CommandInteractionOption[];
+
+      optionsArgs.sort(({ name: aName }, { name: bName }) => {
+        if (!cmd.commandHolder?.options) throw new OasisError('Cant handle args of a command without options');
+        const aIndex = cmd.commandHolder.options.findIndex((option) => option.name === aName);
+        const bIndex = cmd.commandHolder.options.findIndex((option) => option.name === bName);
+        return aIndex - bIndex;
+      });
 
       const valueMappedArgs = optionsArgs.map((option: CommandInteractionOption) => {
         return option.value?.toString() as string;
