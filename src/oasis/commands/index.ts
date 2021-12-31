@@ -30,7 +30,7 @@ class CommandHandler implements ICommandHandler {
 
   private onBeginValidators: IValidator[];
 
-  private Validators: IValidator[];
+  private validators: IValidator[];
 
   private onEndValidators: IValidator[];
 
@@ -41,7 +41,7 @@ class CommandHandler implements ICommandHandler {
   public constructor(commandsFolder: string, globalPrefix: string) {
     this.commandsFolder = commandsFolder;
     this.globalPrefix = globalPrefix;
-    this.Validators = [new GroupsValidator(), new PermissionsValidator(), new RolesValidator()];
+    this.validators = [new GroupsValidator(), new PermissionsValidator(), new RolesValidator()];
 
     this.onBeginValidators = [new PluginsValidator(), new CooldownsValidator()];
     this.onEndValidators = [new OptionsValidator()];
@@ -59,7 +59,7 @@ class CommandHandler implements ICommandHandler {
         this.onBeginValidators.push(handler);
         break;
       case 'async':
-        this.Validators.push(handler);
+        this.validators.push(handler);
         break;
       case 'onEnd':
         this.onEndValidators.push(handler);
@@ -92,16 +92,16 @@ class CommandHandler implements ICommandHandler {
     if (!cmd.commandHolder) return;
 
     try {
-      for (const handler of this.onBeginValidators) {
+      for (const validator of this.onBeginValidators) {
         // eslint-disable-next-line no-await-in-loop
-        await handler.handle(cmd);
+        await validator.validate(cmd);
       }
 
-      await Promise.all(this.Validators.map(async (handler) => handler.handle(cmd)));
+      await Promise.all(this.validators.map(async (validator) => validator.validate(cmd)));
 
-      for (const handler of this.onEndValidators) {
+      for (const validator of this.onEndValidators) {
         // eslint-disable-next-line no-await-in-loop
-        await handler.handle(cmd);
+        await validator.validate(cmd);
       }
 
       await cmd.commandHolder.execute(cmd);
