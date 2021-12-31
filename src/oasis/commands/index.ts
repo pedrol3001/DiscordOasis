@@ -1,4 +1,11 @@
-import { ClientApplication, Collection, CommandInteraction, Interaction, Message } from 'discord.js';
+import {
+  ClientApplication,
+  Collection,
+  CommandInteraction,
+  CommandInteractionOption,
+  Interaction,
+  Message,
+} from 'discord.js';
 
 import { get } from 'lodash';
 import { ICommand } from '../../interfaces/ICommand';
@@ -53,22 +60,6 @@ class CommandHandler implements ICommandHandler {
     await this.edit(AddCommandsFromFolder, this.commandsFolder);
   }
 
-  public addValidator(handler: IValidator, onBegin: IValidatorExecutionMode = 'async') {
-    switch (onBegin) {
-      case 'onBegin':
-        this.onBeginValidators.push(handler);
-        break;
-      case 'async':
-        this.validators.push(handler);
-        break;
-      case 'onEnd':
-        this.onEndValidators.push(handler);
-        break;
-      default:
-        throw new OasisError('Invalid micro handler execution mode');
-    }
-  }
-
   public async edit(ConfType: new () => IAddCommands | IRemoveCommands, ...args: string[]) {
     const provider = new ConfType();
     await provider.handle(this._commands, ...args);
@@ -106,13 +97,14 @@ class CommandHandler implements ICommandHandler {
 
       await cmd.commandHolder.execute(cmd);
     } catch (err) {
-      if (!(err instanceof CommandError)) {
+      if (err instanceof CommandError) {
+        err.send();
+      } else {
         throw new OasisError('Error executing command', {
           cmd,
           error: err,
         });
       }
-      err.send();
     }
   }
 
@@ -144,11 +136,17 @@ class CommandHandler implements ICommandHandler {
         cmd.args.push(subCommand);
       }
 
-      const optionsArgs = get(cmd.options, '_hoistedOptions');
+      const optionsArgs = get(cmd.options, '_hoistedOptions') as CommandInteractionOption[];
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const valueMappedArgs = optionsArgs.map((option: any) => {
-        return option.value;
+      optionsArgs.sort(({ name: aName }, { name: bName }) => {
+        if (!cmd.commandHolder?.options) throw new OasisError('Cant handle args of a command without options');
+        const aIndex = cmd.commandHolder.options.findIndex((option) => option.name === aName);
+        const bIndex = cmd.commandHolder.options.findIndex((option) => option.name === bName);
+        return aIndex - bIndex;
+      });
+
+      const valueMappedArgs = optionsArgs.map((option: CommandInteractionOption) => {
+        return option.value?.toString() as string;
       });
 
       cmd.args.push(...valueMappedArgs);
@@ -161,16 +159,17 @@ class CommandHandler implements ICommandHandler {
   private setCommandHandler(msg: Message | CommandInteraction) {
     const commandMsg = new Array<string>();
     while (!msg.commandHolder && msg.args.length > 0) {
-      commandMsg.push(msg.args.shift()?.toLowerCase() || '');
-      const commandByName = this._commands.get(commandMsg.join(' ')) || null;
-      const commandByAliases = this._commands.find((cmd) => cmd.aliases?.includes(commandMsg.join(' '))) || null;
-      msg.commandHolder = commandByName || commandByAliases;
+      const nextArg = msg.args.shift() as string;
+      commandMsg.push(nextArg.toLowerCase());
+      const commandByName = this._commands.get(commandMsg.join(' '));
+      const commandByAliases = this._commands.find((cmd) => cmd.aliases?.includes(commandMsg.join(' ')));
+      msg.commandHolder = commandByName ?? commandByAliases ?? null;
     }
   }
 
   private setManager(cmd: Message | CommandInteraction, pluginsHandler: IPluginsHandler) {
     const pluginId = get(cmd.commandHolder, 'pluginId');
-    cmd.manager = pluginId ? pluginsHandler.plugins.get(pluginId) || null : null;
+    cmd.manager = (pluginId ? pluginsHandler.plugins.get(pluginId) : undefined) ?? null;
   }
 }
 export default CommandHandler;

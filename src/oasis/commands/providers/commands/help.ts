@@ -44,7 +44,7 @@ const command: ICommand = {
         .setDescription('List os commands');
 
       commands.forEach((commandMapper) => {
-        const description = commandMapper.description.subCommand || commandMapper.description.command;
+        const description = commandMapper.description.subCommand ?? commandMapper.description.command;
         embed.addField(commandMapper.name, description);
       });
 

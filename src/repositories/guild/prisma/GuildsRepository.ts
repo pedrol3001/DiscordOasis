@@ -5,7 +5,7 @@ import { ConditionalArray } from '../../../utils/types';
 import { IGuildsRepository, includeGuild } from './IGuildsRepository';
 
 class GuildsRepository implements IGuildsRepository {
-  private repository: Prisma.GuildDelegate<Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined>;
+  private repository: Prisma.GuildDelegate<Prisma.RejectOnNotFound | Prisma.RejectPerOperation>;
 
   constructor() {
     this.repository = prisma.guild;

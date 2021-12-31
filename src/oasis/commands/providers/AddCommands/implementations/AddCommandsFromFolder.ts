@@ -4,6 +4,7 @@
 
 import { readdirSync } from 'fs';
 import { Collection } from 'discord.js';
+import { assign } from 'lodash';
 import { ICommand } from '../../../../../interfaces/ICommand';
 import { OasisError } from '../../../../../error/OasisError';
 import { IAddCommands } from '../IAddCommands';
@@ -22,7 +23,7 @@ class AddCommandsFromFolder implements IAddCommands {
 
         const command: ICommand = require(`${folderPath}/${file}`).default;
 
-        Object.assign(command, { pluginId });
+        assign(command, { pluginId });
 
         const alreadyExists = collection.get(command.name);
 
@@ -30,7 +31,7 @@ class AddCommandsFromFolder implements IAddCommands {
           throw new OasisError(`Error adding command ${command.name} from folder, this commands already exists.`);
         }
 
-        collection.set(command.name, command); // Add command to collection
+        collection.set(command.name, command);
       }
     } catch (err) {
       throw new OasisError('Error adding commands from folder', {

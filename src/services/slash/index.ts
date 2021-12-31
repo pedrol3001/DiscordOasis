@@ -37,8 +37,8 @@ class SlashCommands {
     const [commandName, subCommandGroupName, subCommandName] = fullSplittedCommandName;
 
     const commandDescription = command.description.command;
-    const subCommandGroupDescription = command.description?.subCommandGroup || commandDescription;
-    const subCommandDescription = command.description?.subCommand || subCommandGroupDescription || commandDescription;
+    const subCommandGroupDescription = command.description?.subCommandGroup ?? commandDescription;
+    const subCommandDescription = command.description?.subCommand ?? subCommandGroupDescription ?? commandDescription;
 
     const commandData = new SlashCommandBuilder();
     commandData.setName(commandName);
@@ -96,7 +96,7 @@ class SlashCommands {
     });
     const mergedSlashCommands = this.recursiveMergeArrayBy(slashCommandsJSON, 'name');
     await this.registerCommands(applicationId, mergedSlashCommands, guildId);
-    logger.info(`Successfully reloaded application (/) commands for guild ${guildId || 'Global'}`);
+    logger.info(`Successfully reloaded application (/) commands for guild ${guildId ?? 'Global'}`);
   }
 }
 
