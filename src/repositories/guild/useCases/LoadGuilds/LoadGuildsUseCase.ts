@@ -1,5 +1,7 @@
 import { Collection, Guild } from 'discord.js';
 import { inject, injectable } from 'tsyringe';
+import { Guild as GuildDb } from '@prisma/client';
+import { assign } from 'lodash';
 import { IGuildsRepository } from '../../prisma/IGuildsRepository';
 
 @injectable()
@@ -13,9 +15,11 @@ class LoadGuildsUseCase {
     await Promise.all(
       guilds.map(async (guild) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const guildFromDb: any = await this.guildRepository.findById(guild.id, { plugins: true });
+        const guildFromDb: GuildDb = await this.guildRepository.findById(guild.id, {
+          plugins: true,
+        });
         if (guildFromDb) {
-          Object.assign(guild, ...guildFromDb);
+          assign(guild, guildFromDb);
         }
       }),
     );

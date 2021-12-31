@@ -1,4 +1,11 @@
-import { ClientApplication, Collection, CommandInteraction, Interaction, Message } from 'discord.js';
+import {
+  ClientApplication,
+  Collection,
+  CommandInteraction,
+  CommandInteractionOption,
+  Interaction,
+  Message,
+} from 'discord.js';
 
 import { get } from 'lodash';
 import { ICommand } from '../../interfaces/ICommand';
@@ -106,13 +113,14 @@ class CommandHandler implements ICommandHandler {
 
       await cmd.commandHolder.execute(cmd);
     } catch (err) {
-      if (!(err instanceof CommandError)) {
+      if (err instanceof CommandError) {
+        err.send();
+      } else {
         throw new OasisError('Error executing command', {
           cmd,
           error: err,
         });
       }
-      err.send();
     }
   }
 
@@ -144,11 +152,11 @@ class CommandHandler implements ICommandHandler {
         cmd.args.push(subCommand);
       }
 
-      const optionsArgs = get(cmd.options, '_hoistedOptions');
+      const optionsArgs = get(cmd.options, '_hoistedOptions') as Array<CommandInteractionOption>;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const valueMappedArgs = optionsArgs.map((option: any) => {
-        return option.value;
+      const valueMappedArgs = optionsArgs.map((option: CommandInteractionOption) => {
+        return option.value?.toString() || 'undefined';
       });
 
       cmd.args.push(...valueMappedArgs);
