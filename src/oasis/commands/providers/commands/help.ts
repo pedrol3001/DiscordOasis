@@ -1,7 +1,7 @@
 import { ColorResolvable, CommandInteraction, Message, MessageEmbed } from 'discord.js';
 import { get, groupBy } from 'lodash';
 import { ICommand } from '../../../../interfaces/ICommand';
-import { IPluginsHandler } from '../../../plugins/IPluginsHandler';
+import { IPluginHandler } from '../../../plugins/IPluginHandler';
 import { ICommandHandler } from '../../ICommandHandler';
 
 const command: ICommand = {
@@ -18,7 +18,7 @@ const command: ICommand = {
     const dmChannel = await author.createDM();
 
     const commandHandler = get(msg.client, 'commandHandler') as ICommandHandler;
-    const pluginsHandler = get(msg.client, 'pluginsHandler') as IPluginsHandler;
+    const pluginHandler = get(msg.client, 'pluginHandler') as IPluginHandler;
 
     const pluginGroupedCommands = groupBy(commandHandler.commands, (cmd) => {
       return get(cmd, 'pluginId', null);
@@ -32,7 +32,7 @@ const command: ICommand = {
       let title = 'Default';
       let color = '#0099ff';
 
-      const plugin = pluginsHandler.plugins.get(pluginId);
+      const plugin = pluginHandler.plugins.get(pluginId);
       if (plugin) {
         title = plugin.name;
         color = plugin.color;

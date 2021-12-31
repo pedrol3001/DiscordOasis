@@ -1,10 +1,10 @@
 import { Collection } from 'discord.js';
 import { AbstractPlugin } from './class/AbstractPlugin';
 import { ICommandHandler } from '../commands/ICommandHandler';
-import { IPluginsHandler } from './IPluginsHandler';
+import { IPluginHandler } from './IPluginHandler';
 import { OasisError } from '../../error/OasisError';
 
-class PluginsHandler implements IPluginsHandler {
+class PluginHandler implements IPluginHandler {
   private _plugins: Collection<string, AbstractPlugin> = new Collection<string, AbstractPlugin>();
 
   constructor(pluginsManagers: AbstractPlugin[]) {
@@ -37,4 +37,4 @@ class PluginsHandler implements IPluginsHandler {
   }
 }
 
-export default PluginsHandler;
+export default PluginHandler;

@@ -23,7 +23,7 @@ import { OptionsValidator } from './validators/implementations/OptionsValidator'
 import { PermissionsValidator } from './validators/implementations/PermissionsValidator';
 import { RolesValidator } from './validators/implementations/RolesValidator';
 import { CooldownsValidator } from './validators/implementations/CooldownsValidator';
-import { IPluginsHandler } from '../plugins/IPluginsHandler';
+import { IPluginHandler } from '../plugins/IPluginHandler';
 import { PluginsValidator } from './validators/implementations/PluginsValidator';
 
 export type IValidatorExecutionMode = 'onBegin' | 'async' | 'onEnd';
@@ -65,7 +65,7 @@ class CommandHandler implements ICommandHandler {
     await provider.handle(this._commands, ...args);
   }
 
-  public async handle(cmd: Message | Interaction, pluginsHandler: IPluginsHandler) {
+  public async handle(cmd: Message | Interaction, pluginHandler: IPluginHandler) {
     if (cmd instanceof Interaction) {
       if (!cmd.isCommand()) return;
     } else {
@@ -75,7 +75,7 @@ class CommandHandler implements ICommandHandler {
 
     this.setArgs(cmd);
     this.setCommandHandler(cmd);
-    this.setManager(cmd, pluginsHandler);
+    this.setManager(cmd, pluginHandler);
     await this.executeHandler(cmd);
   }
 
@@ -167,9 +167,9 @@ class CommandHandler implements ICommandHandler {
     }
   }
 
-  private setManager(cmd: Message | CommandInteraction, pluginsHandler: IPluginsHandler) {
+  private setManager(cmd: Message | CommandInteraction, pluginHandler: IPluginHandler) {
     const pluginId = get(cmd.commandHolder, 'pluginId');
-    cmd.manager = (pluginId ? pluginsHandler.plugins.get(pluginId) : undefined) ?? null;
+    cmd.manager = (pluginId ? pluginHandler.plugins.get(pluginId) : undefined) ?? null;
   }
 }
 export default CommandHandler;

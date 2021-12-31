@@ -7,11 +7,11 @@ import { prisma } from '../database';
 
 import logger from '../services/logger';
 import CommandHandler from './commands';
-import PluginsHandler from './plugins';
+import PluginHandler from './plugins';
 
 import { OasisError } from '../error/OasisError';
 import { IOasisOptions } from '../interfaces/IOasisOptions';
-import { IPluginsHandler } from './plugins/IPluginsHandler';
+import { IPluginHandler } from './plugins/IPluginHandler';
 import { LoadGuildsController } from '../repositories/guild/useCases/LoadGuilds/LoadGuildsController';
 import { CreateGuildController } from '../repositories/guild/useCases/CreateGuild/CreateGuildController';
 import { ICommandHandler } from './commands/ICommandHandler';
@@ -20,14 +20,14 @@ import { SlashCommands } from '../services/slash';
 class Oasis extends Client {
   readonly commandHandler: ICommandHandler;
 
-  readonly pluginsHandler: IPluginsHandler;
+  readonly pluginHandler: IPluginHandler;
 
   constructor(options: IOasisOptions) {
     super(options);
     const { plugins, commandsFolder, globalPrefix, loggerTransports } = options;
 
     this.commandHandler = new CommandHandler(commandsFolder, globalPrefix);
-    this.pluginsHandler = new PluginsHandler(plugins ?? []);
+    this.pluginHandler = new PluginHandler(plugins ?? []);
 
     this.setDefaultCallbacks();
     this.setLogTransports(loggerTransports);
@@ -66,7 +66,7 @@ class Oasis extends Client {
   }
 
   private setDefaultCallbacks(): void {
-    const { pluginsHandler, commandHandler } = this;
+    const { pluginHandler, commandHandler } = this;
 
     this.once('ready', async () => {
       if (!this.user || !this.application) {
@@ -75,7 +75,7 @@ class Oasis extends Client {
 
       await this.setupGuildsModels();
       await commandHandler.setup(this.application);
-      await pluginsHandler.setup(this.commandHandler);
+      await pluginHandler.setup(this.commandHandler);
       await this.setupSlashCommands();
 
       this.user.setActivity('Online!');
@@ -83,11 +83,11 @@ class Oasis extends Client {
     });
 
     this.on('messageCreate', async (message: Message): Promise<void> => {
-      await commandHandler.handle(message, pluginsHandler);
+      await commandHandler.handle(message, pluginHandler);
     });
 
     this.on('interactionCreate', async (interaction: Interaction): Promise<void> => {
-      await commandHandler.handle(interaction, pluginsHandler);
+      await commandHandler.handle(interaction, pluginHandler);
     });
 
     this.on('guildCreate', async (guild: Guild): Promise<void> => {
