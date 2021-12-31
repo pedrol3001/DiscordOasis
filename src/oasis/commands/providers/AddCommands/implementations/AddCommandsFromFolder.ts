@@ -31,7 +31,7 @@ class AddCommandsFromFolder implements IAddCommands {
           throw new OasisError(`Error adding command ${command.name} from folder, this commands already exists.`);
         }
 
-        collection.set(command.name, command); // Add command to collection
+        collection.set(command.name, command);
       }
     } catch (err) {
       throw new OasisError('Error adding commands from folder', {

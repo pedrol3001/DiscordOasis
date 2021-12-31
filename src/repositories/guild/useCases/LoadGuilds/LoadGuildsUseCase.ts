@@ -14,7 +14,6 @@ class LoadGuildsUseCase {
   public async execute(guilds: Collection<string, Guild>): Promise<void> {
     await Promise.all(
       guilds.map(async (guild) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const guildFromDb: GuildDb = await this.guildRepository.findById(guild.id, {
           plugins: true,
         });

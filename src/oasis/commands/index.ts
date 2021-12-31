@@ -154,7 +154,6 @@ class CommandHandler implements ICommandHandler {
 
       const optionsArgs = get(cmd.options, '_hoistedOptions') as Array<CommandInteractionOption>;
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const valueMappedArgs = optionsArgs.map((option: CommandInteractionOption) => {
         return option.value?.toString() as string;
       });

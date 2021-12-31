@@ -19,7 +19,6 @@ interface OptionMapper {
   addOption: AddOption;
 }
 export function optionsMapper(subCommandRef: SlashCommandBuilder | SlashCommandSubcommandBuilder) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const optionMapper: Record<string, OptionMapper> = {
     BOOLEAN: {
       addOption: (optionsAttributes: OptionAttribute) => {
