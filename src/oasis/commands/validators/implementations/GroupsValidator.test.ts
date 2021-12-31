@@ -53,8 +53,8 @@ describe('Validate groups', () => {
     describe('DM only command', () => {
       it('should fail validation', () => {
         validator.validate(command).catch((error) => {
-          expect(error).not.toBeInstanceOf(Error);
           expect(error).toBeInstanceOf(CommandError);
+          expect(error).not.toBeInstanceOf(Error);
           expect(error.message).toBe('You can only use this command inside a server');
         });
       });

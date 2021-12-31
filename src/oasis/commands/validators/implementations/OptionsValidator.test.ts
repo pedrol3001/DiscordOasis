@@ -2,13 +2,13 @@ import { Message } from 'discord.js';
 import { OptionsValidator } from './OptionsValidator';
 import { CommandError } from '../../error/CommandError';
 
-xdescribe('Validate options', () => {
+describe('Validate options', () => {
   const validator = new OptionsValidator();
 
-  it('should not accept the command', async () => {
+  describe('with insufficient required options', () => {
     const command = {
+      args: [],
       commandHolder: {
-        args: [],
         options: [
           {
             required: true,
@@ -17,6 +17,12 @@ xdescribe('Validate options', () => {
       },
     } as unknown as Message;
 
-    await expect(validator.validate(command)).toThrow(CommandError);
+    it('should fail validation ', () => {
+      validator.validate(command).catch((error) => {
+        expect(error).toBeInstanceOf(CommandError);
+        expect(error).not.toBeInstanceOf(Error);
+        expect(error.message).toBe('Missing required option');
+      });
+    });
   });
 });

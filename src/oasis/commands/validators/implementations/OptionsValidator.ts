@@ -9,9 +9,9 @@ class OptionsValidator implements IValidator {
         return option.required === true;
       }) ?? [];
 
-    if (cmd.args.length >= requiredArguments.length) return;
-    const reply = 'Invalid arguments';
-    throw new CommandError(reply, cmd.channel);
+    if (cmd.args.length < requiredArguments.length) {
+      throw new CommandError(`Missing required option`, cmd.channel);
+    }
   }
 }
 
