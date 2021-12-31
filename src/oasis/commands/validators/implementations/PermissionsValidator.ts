@@ -1,9 +1,9 @@
 import { CommandInteraction, Message } from 'discord.js';
-import { CommandError } from '../../../commands/error/CommandError';
-import { IMicroHandler } from '../IMicroHandler';
+import { CommandError } from '../../error/CommandError';
+import { IValidator } from '../IValidator';
 
-class PermissionsMicroHandler implements IMicroHandler {
-  async handle(cmd: Message | CommandInteraction) {
+class PermissionsValidator implements IValidator {
+  async validate(cmd: Message | CommandInteraction) {
     // permissions handler
     if (!cmd.guild || !cmd.member || !cmd.commandHolder?.permissionsList) return;
     for (const requiredPermission of cmd.commandHolder.permissionsList) {
@@ -16,4 +16,4 @@ class PermissionsMicroHandler implements IMicroHandler {
   }
 }
 
-export { PermissionsMicroHandler };
+export { PermissionsValidator };

@@ -1,9 +1,9 @@
 import { CommandInteraction, Message } from 'discord.js';
 import { CommandError } from '../../error/CommandError';
-import { IMicroHandler } from '../IMicroHandler';
+import { IValidator } from '../IValidator';
 
-class OptionsMicroHandler implements IMicroHandler {
-  async handle(cmd: Message | CommandInteraction) {
+class OptionsValidator implements IValidator {
+  async validate(cmd: Message | CommandInteraction) {
     const requiredArguments =
       cmd.commandHolder?.options.filter((option) => {
         return option.required === true;
@@ -15,4 +15,4 @@ class OptionsMicroHandler implements IMicroHandler {
   }
 }
 
-export { OptionsMicroHandler };
+export { OptionsValidator };
