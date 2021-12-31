@@ -156,7 +156,7 @@ class CommandHandler implements ICommandHandler {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const valueMappedArgs = optionsArgs.map((option: CommandInteractionOption) => {
-        return option.value?.toString() || 'undefined';
+        return option.value?.toString() as string;
       });
 
       cmd.args.push(...valueMappedArgs);

@@ -5,7 +5,7 @@ import { ConditionalArray } from '../../../utils/types';
 import { includePlugin, IPluginsRepository } from './IPluginsRepository';
 
 class PluginsRepository implements IPluginsRepository {
-  private repository: Prisma.PluginDelegate<Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined>;
+  private repository: Prisma.PluginDelegate<Prisma.RejectOnNotFound | Prisma.RejectPerOperation>;
 
   constructor() {
     this.repository = prisma.plugin;
