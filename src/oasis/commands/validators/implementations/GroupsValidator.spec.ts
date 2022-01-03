@@ -50,7 +50,7 @@ describe('Validate groups', () => {
       },
     } as unknown as Message;
 
-    describe('DM only command', () => {
+    describe('Guild only command', () => {
       it('should fail validation', () => {
         validator.validate(command).catch((error) => {
           expect(error).toBeInstanceOf(CommandError);
