@@ -2,7 +2,7 @@ import { Message } from 'discord.js';
 import { ArgsValidator } from './ArgsValidator';
 import { CommandError } from '../../error/CommandError';
 
-describe('Validate arguments', () => {
+describe('Validate arguments rules', () => {
   const validator = new ArgsValidator();
 
   describe('with insufficient required arguments', () => {

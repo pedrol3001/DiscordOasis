@@ -2,7 +2,7 @@ import { Message } from 'discord.js';
 import { CommandError } from '../../error/CommandError';
 import { GroupsValidator } from './GroupsValidator';
 
-describe('Validate groups', () => {
+describe('Validate groups rules', () => {
   const validator = new GroupsValidator();
 
   describe('inside GUILD_TEXT channel', () => {
